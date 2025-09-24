@@ -112,8 +112,22 @@ export default function PengumumanHome({ showHeader = true, className }: Pengumu
                                 {t('title')}
                             </h2>
                             <div className="w-24 h-1.5 bg-gradient-to-r from-[#F2AC59] to-[#e09c4a] rounded-full"></div>
+                            {/* Mobile View All Button */}
+                            <div className="md:hidden w-full pt-4">
+                                <Link 
+                                    href="/umum/informasi"
+                                    locale={router.locale}
+                                    className="w-full flex justify-center items-center px-6 py-3 bg-gradient-to-r from-[#F2AC59] to-[#e09c4a] hover:from-[#e09c4a] hover:to-[#d08b3a] text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+                                >
+                                    {t('viewAll')}
+                                    <svg className="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </Link>
+                            </div>
                         </div>
                     </div>
+                    {/* Desktop View All Button */}
                     <div className="hidden md:flex items-center h-full mt-6">
                         <Link 
                             href="/umum/informasi"
