@@ -22,48 +22,55 @@ interface Kantor {
 
 const kantorPusat: Kantor = {
   kota: "Kantor Pusat",
-  alamat: "Sudirman Plaza, Gedung Plaza Marein Lt. 7 & 19\nJl. Jend. Sudirman Kav. 76-78, Jakarta 12910",
-  telepon: "(021) 5793 6555",
-  fax: "(021) 5793 6550",
-  email: "corporate@kontak-perkasa-futures.co.id",
-  mapLink: "https://maps.google.com/?q=Sudirman+Plaza+Jakarta"
+  alamat: "Sahid Sudirman Center Lt. 9 Unit C,D,G,H & Lt. 21 Unit A\nJl. Jend. Sudirman No.86, Jakarta Pusat 10220",
+  telepon: "+62 21 27889280 (Hunting)",
+  fax: "+62 21 27889277",
+  email: "corporate@equityworld-futures.co.id",
+  mapLink: "https://maps.google.com/?q=Sahid+Sudirman+Center+Jakarta"
 };
 
 const kantorCabang: Kantor[] = [
   {
-    kota: "Yogyakarta",
-    alamat: "Jl. Urip Sumoharjo No. 111, Klitren,\nGondokusuman, Yogyakarta",
-    telepon: "(0274) 5027070",
-    fax: "(0274) 5027171",
-    mapLink: "https://maps.google.com/?q=Jl.+Urip+Sumoharjo+No.+111,+Yogyakarta"
+    kota: "SURABAYA TRILLIUM",
+    alamat: "Trillium Office & Residence, Lt.2 & 3\nJl. Pemuda No. 108-116, Surabaya 60271",
+    telepon: "+62 31 6000 3788 (Hunting)",
+    fax: "+62 31 6000 3688",
+    mapLink: "https://maps.google.com/?q=Trillium+Office+Residence+Surabaya"
   },
   {
-    kota: "Bali",
-    alamat: "Jl. Jenderal Sudirman 10X, Dauh Puri Klod,\nDenpasar Barat, Kota Denpasar, Bali 80114",
-    telepon: "(0361) 2107888",
-    fax: "(0361) 2108107",
-    mapLink: "https://maps.google.com/?q=Jl.+Jend.+Sudirman+10X,+Denpasar"
+    kota: "MANADO",
+    alamat: "Kompleks Ruko Mega Mas Blok 1 D1 No. 24 - 25\nJl. Piere Tendean, Manado 95111",
+    telepon: "+62 431 879618 (Hunting)",
+    fax: "+62 431 879610",
+    mapLink: "https://maps.google.com/?q=Ruko+Mega+Mas+Manado"
   },
   {
-    kota: "Makassar",
-    alamat: "Menara Bosowa Lt. 9\nJl. Jend. Sudirman No. 5 Makassar, Sulawesi Selatan 90115",
-    telepon: "(0411) 368 1000",
-    fax: "(0411) 368 1001",
-    mapLink: "https://maps.google.com/?q=Menara+Bosowa+Makassar"
+    kota: "JAKARTA",
+    alamat: "Gedung Cyber 2 Lt. 19\nJl. HR. Rasuna Said Blok X-5 No. 13, Jakarta Selatan 12950",
+    telepon: "+62 21 2902 1661 (Hunting)",
+    fax: "+62 21 2902 1675",
+    mapLink: "https://maps.google.com/?q=Gedung+Cyber+2+Jakarta"
   },
   {
-    kota: "Bandung",
-    alamat: "Ruko Paskal Hypersquare\nJl. Pasir Kaliki Blok D 33, 35, 36 Bandung 40164",
-    telepon: "(022) 87786162",
-    fax: "(022) 87786178",
-    mapLink: "https://maps.google.com/?q=Paskal+Hypersquare+Bandung"
+    kota: "SEMARANG",
+    alamat: "Rukan Pemuda Mas, Blok A Kav. 12 - 13\nJl. Pemuda No. 150, Semarang 50132",
+    telepon: "+62 24 3520226 (Hunting)",
+    fax: "+62 24 3520227",
+    mapLink: "https://maps.google.com/?q=Rukan+Pemuda+Mas+Semarang"
   },
   {
-    kota: "Semarang",
-    alamat: "Jl. Sultan Agung No. 100 A-C\nKel. Wonotingal, Kec. Gajahmungkur, Semarang 50232",
-    telepon: "(024) 76421717",
-    fax: "(024) 76421713",
-    mapLink: "https://maps.google.com/?q=Jl.+Sultan+Agung+No.+100+Semarang"
+    kota: "SURABAYA PRAXIS",
+    alamat: "Gedung Praxis Lt.5 Unit No.5p. 33,35,36\nJl. Sono Kembang 4-6, Embong Kaliasin, Kec. Genteng, Surabaya 60271",
+    telepon: "+62 31 99255088",
+    fax: "+62 31 99255066",
+    mapLink: "https://maps.google.com/?q=Gedung+Praxis+Surabaya"
+  },
+  {
+    kota: "CIREBON",
+    alamat: "Perkantoran CSB Mall, Yellow Ribbon 15-18\nJl. DR.Cipto Mangunkusumo Pekiringan, Kesambi, Cirebon 45131",
+    telepon: "+62 231 8291700",
+    fax: "+62 231 8291498",
+    mapLink: "https://maps.google.com/?q=CSB+Mall+Cirebon"
   }
 ];
 
@@ -162,8 +169,8 @@ export default function HubungiKami() {
             {t('complaintDescription')}
           </p>
           <a 
-            href="mailto:customer.care@kontak-perkasa-futures.co.id"
-            className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded"
+            href="mailto:customer.care@equityworld-futures.co.id"
+            className="inline-flex items-center bg-[#F2AC59] hover:bg-[#e09c4a] text-white font-medium py-2 px-4 rounded transition-colors duration-200"
           >
             <FaEnvelope className="mr-2" /> {t('sendEmail')}
           </a>
