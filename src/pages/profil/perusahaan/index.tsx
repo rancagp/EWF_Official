@@ -79,7 +79,7 @@ export default function ProfilPerusahaan() {
   return (
     <PageTemplate title={t('pageTitle')}>
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
-        <ProfilContainer title="PT. KONTAKPERKASA FUTURES">
+        <ProfilContainer title="PT. EQUITYWORLD FUTURES">
           {/* Tentang Kami */}
           <section className="mb-16">
             <div>
