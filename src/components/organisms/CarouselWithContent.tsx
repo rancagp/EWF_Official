@@ -505,7 +505,7 @@ export default function CarouselWithContent() {
                                         key={i}
                                         href={item.link}
                                         target="_blank"
-                                        className="inline-block bg-white hover:bg-gray-100 transition text-green-800 rounded-full px-5 py-3 font-semibold shadow"
+                                        className="inline-block bg-white hover:bg-gray-100 transition text-[#4C4C4C] rounded-full px-5 py-3 font-semibold shadow"
                                     >
                                         {item.label}
                                     </a>
