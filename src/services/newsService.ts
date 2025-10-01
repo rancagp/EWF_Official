@@ -48,17 +48,32 @@ export interface NewsApiResponse {
   total: number;
 }
 
+const API_BASE_URL = 'https://portalnews.newsmaker.id/api/v1/berita';
+const API_TOKEN = 'EWF-06433b884f930161';
+
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', `Bearer ${API_TOKEN}`);
+  headers.set('Accept', 'application/json');
+  
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    cache: 'no-store' as const
+  });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} on ${url}`);
+  }
+  
+  return response.json();
+};
+
 export const fetchLatestNews = async (limit = 3): Promise<NewsItem[]> => {
   try {
-    const response = await fetch(
-      `https://portalnews.newsmaker.id/api/berita?per_page=${limit}&sort_by=created_at&order=desc`
+    const data = await fetchWithAuth(
+      `${API_BASE_URL}?per_page=${limit}&sort_by=created_at&order=desc`
     );
-    
-    if (!response.ok) {
-      throw new Error('Gagal mengambil berita terbaru');
-    }
-    
-    const data = await response.json();
     
     // Process each news item to prioritize EWF title and use 4th image
     const processedData = data.data.map((item: NewsItem) => {
@@ -87,15 +102,9 @@ export const fetchLatestNews = async (limit = 3): Promise<NewsItem[]> => {
 
 export const fetchNews = async (page = 1, perPage = 9, sortBy = 'created_at', order = 'desc'): Promise<NewsApiResponse> => {
   try {
-    const response = await fetch(
-      `https://portalnews.newsmaker.id/api/berita?page=${page}&per_page=${perPage}&sort_by=${sortBy}&order=${order}`
+    const data = await fetchWithAuth(
+      `${API_BASE_URL}?page=${page}&per_page=${perPage}&sort_by=${sortBy}&order=${order}`
     );
-    
-    if (!response.ok) {
-      throw new Error('Gagal mengambil daftar berita');
-    }
-    
-    const data = await response.json();
     
     // Process each news item to prioritize EWF title and use 4th image
     if (data.data && Array.isArray(data.data)) {
@@ -136,15 +145,9 @@ export const fetchFeaturedNews = async (limit = 3): Promise<NewsItem[]> => {
 
 export const fetchNewsDetail = async (slug: string): Promise<NewsItem | null> => {
   try {
-    const response = await fetch(
-      `https://portalnews.newsmaker.id/api/berita/${slug}`
+    const result = await fetchWithAuth(
+      `${API_BASE_URL}/${slug}`
     );
-    
-    if (!response.ok) {
-      throw new Error('Berita tidak ditemukan');
-    }
-    
-    const result = await response.json();
     
     if (result.data) {
       // For images, we want to use the 4th image (index 3) if it exists

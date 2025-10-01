@@ -28,7 +28,7 @@ const getFullImageUrl = (images: string[] | undefined) => {
   
   if (!imagePath) return '/images/placeholder-news.jpg';
   if (imagePath.startsWith('http')) return imagePath;
-  // Gunakan base URL yang benar untuk gambar
+  // Pastikan URL gambar menggunakan domain yang benar
   return `https://portalnews.newsmaker.id/${imagePath.replace(/^\/+/, '')}`;
 };
 

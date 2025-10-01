@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         has: [
           {
             type: 'header',
-            key: 'accept-language',
+            key: 'accept-language', 
             value: 'en',
           },
         ],
