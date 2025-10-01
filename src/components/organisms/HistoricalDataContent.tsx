@@ -3,11 +3,14 @@ import { useTranslation } from 'next-i18next';
 import { getHistoricalData, HistoricalDataItem, SymbolData } from '@/services/historicalDataService';
 import { FiFilter, FiDownload } from 'react-icons/fi';
 
-interface HistoricalData extends Omit<HistoricalDataItem, 'open' | 'high' | 'low' | 'close'> {
+interface HistoricalData extends Omit<HistoricalDataItem, 'open' | 'high' | 'low' | 'close' | 'change' | 'volume' | 'openInterest'> {
     open: string;
     high: string;
     low: string;
     close: string;
+    change?: string;
+    volume?: string | number;
+    openInterest?: string | number | null;
     category: string;
     date: string;
     tanggal?: string;
@@ -93,17 +96,28 @@ const transformData = (apiData: SymbolData[]): HistoricalData[] => {
                 return value !== null && value !== undefined ? value.toString() : '';
             };
             
-            return {
+            // Helper function to safely convert to number or null
+            const safeToNumber = (value: any): number | null => {
+                const num = Number(value);
+                return isNaN(num) ? null : num;
+            };
+            
+            const result: HistoricalData = {
                 ...item,
                 open: safeToString(item.open),
                 high: safeToString(item.high),
                 low: safeToString(item.low),
                 close: safeToString(item.close),
+                change: item.change || undefined,
+                volume: safeToNumber(item.volume) ?? undefined,
+                openInterest: item.openInterest !== undefined ? safeToNumber(item.openInterest) : undefined,
                 category: item.symbol,
                 date: item.date,
                 // Keep for backward compatibility
                 tanggal: item.date
             };
+            
+            return result;
         })
     );
 };
@@ -425,11 +439,26 @@ export default function HistoricalDataContent() {
                                     <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                         Close
                                     </th>
+                                    {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                            Change
+                                        </th>
+                                    )}
+                                    {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                            Volume
+                                        </th>
+                                    )}
+                                    {selectedInstrument === 'HSI Daily' && (
+                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                            Open Interest
+                                        </th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-[#E5E7EB]">
                                 {currentItems.map((item, index) => (
-                                    <tr key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB] hover:bg-[#FFF9F5]'}>
+                                    <tr key={`${item.id}-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB] hover:bg-[#FFF9F5]'}>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                             {formatDate(item.date)}
                                         </td>
@@ -445,6 +474,21 @@ export default function HistoricalDataContent() {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                             {item.close}
                                         </td>
+                                        {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
+                                                {item.change}
+                                            </td>
+                                        )}
+                                        {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
+                                                {item.volume ? item.volume.toLocaleString() : '-'}
+                                            </td>
+                                        )}
+                                        {selectedInstrument === 'HSI Daily' && (
+                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
+                                                {item.openInterest ? item.openInterest.toLocaleString() : '-'}
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
