@@ -1,6 +1,23 @@
-import axios from 'axios';
+const API_BASE_URL = 'https://portalnews.newsmaker.id/api/v1/kalender-ekonomi';
+const API_TOKEN = 'EWF-06433b884f930161';
 
-const API_URL = 'https://portalnews.newsmaker.id/api/kalender-ekonomi';
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', `Bearer ${API_TOKEN}`);
+  headers.set('Accept', 'application/json');
+  
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    cache: 'no-store' as const
+  });
+  
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} on ${url}`);
+  }
+  
+  return response.json();
+};
 
 export interface EconomicEvent {
   id: number;
@@ -30,11 +47,11 @@ export interface ApiResponse {
 
 export const fetchEconomicCalendar = async (): Promise<EconomicEvent[]> => {
   try {
-    const response = await axios.get<ApiResponse>(API_URL);
-    if (response.data.status === 'success') {
-      return response.data.data;
+    const data = await fetchWithAuth(API_BASE_URL);
+    if (data.status === 'success') {
+      return data.data;
     }
-    throw new Error('Failed to fetch economic calendar data');
+    throw new Error('Gagal mengambil data kalender ekonomi');
   } catch (error) {
     console.error('Error fetching economic calendar:', error);
     throw error;
