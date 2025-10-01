@@ -1,34 +1,82 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from 'next-i18next';
-import { getHistoricalData } from '@/services/historicalDataService';
+import { getHistoricalData, HistoricalDataItem, SymbolData } from '@/services/historicalDataService';
 import { FiFilter, FiDownload } from 'react-icons/fi';
 
-interface HistoricalData {
-    id: number;
-    tanggal: string;
+interface HistoricalData extends Omit<HistoricalDataItem, 'open' | 'high' | 'low' | 'close'> {
     open: string;
     high: string;
     low: string;
     close: string;
     category: string;
-    created_at: string;
-    updated_at: string;
+    date: string;
+    tanggal?: string;
 }
 
-const formatDate = (dateString: string): string => {
-    try {
-        if (!dateString) return '';
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) {
-            console.error('Invalid date string:', dateString);
-            return dateString;
+/**
+ * Parses a date string in format 'DD MMM YYYY' or 'YYYY-MM-DD' to a Date object
+ * @param dateString Date string to parse
+ * @returns Date object at midnight in local timezone
+ */
+const parseDate = (dateString: string): Date | null => {
+    if (!dateString) return null;
+    
+    // Try parsing 'DD MMM YYYY' format first (e.g., '30 Sep 2025')
+    const dateParts = dateString.match(/^(\d{1,2})\s(\w{3})\s(\d{4})$/);
+    if (dateParts) {
+        const months: { [key: string]: number } = {
+            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+        };
+        
+        const day = parseInt(dateParts[1], 10);
+        const month = months[dateParts[2]];
+        const year = parseInt(dateParts[3], 10);
+        
+        if (isNaN(day) || isNaN(year) || month === undefined) {
+            console.error('Invalid date format:', dateString);
+            return null;
         }
+        
+        return new Date(year, month, day);
+    }
+    
+    // Try parsing 'YYYY-MM-DD' format
+    const isoMatch = dateString.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (isoMatch) {
+        const year = parseInt(isoMatch[1], 10);
+        const month = parseInt(isoMatch[2], 10) - 1; // months are 0-indexed
+        const day = parseInt(isoMatch[3], 10);
+        
+        if (isNaN(year) || isNaN(month) || isNaN(day)) {
+            console.error('Invalid date format:', dateString);
+            return null;
+        }
+        
+        return new Date(year, month, day);
+    }
+    
+    console.error('Unsupported date format:', dateString);
+    return null;
+};
+
+/**
+ * Formats a date string to 'DD MMM YYYY' format in Asia/Jakarta timezone
+ * @param dateString Date string to format
+ * @returns Formatted date string or original string if invalid
+ */
+const formatDate = (dateString: string): string => {
+    const date = parseDate(dateString);
+    if (!date) return dateString;
+    
+    try {
         const options: Intl.DateTimeFormatOptions = { 
             day: '2-digit', 
             month: 'short', 
             year: 'numeric',
-            timeZone: 'UTC'
+            timeZone: 'Asia/Jakarta'
         };
+        
         return date.toLocaleDateString('en-GB', options);
     } catch (error) {
         console.error('Error formatting date:', error);
@@ -36,11 +84,36 @@ const formatDate = (dateString: string): string => {
     }
 };
 
+// Convert API data to the format expected by the component
+const transformData = (apiData: SymbolData[]): HistoricalData[] => {
+    return apiData.flatMap(symbolData => 
+        symbolData.data.map(item => {
+            // Helper function to safely convert to string
+            const safeToString = (value: any): string => {
+                return value !== null && value !== undefined ? value.toString() : '';
+            };
+            
+            return {
+                ...item,
+                open: safeToString(item.open),
+                high: safeToString(item.high),
+                low: safeToString(item.low),
+                close: safeToString(item.close),
+                category: item.symbol,
+                date: item.date,
+                // Keep for backward compatibility
+                tanggal: item.date
+            };
+        })
+    );
+};
+
 export default function HistoricalDataContent() {
     const { t } = useTranslation('historical-data');
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [dataHistorical, setDataHistorical] = useState<HistoricalData[]>([]);
+    const [apiData, setApiData] = useState<SymbolData[]>([]);
     const [filteredData, setFilteredData] = useState<HistoricalData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -55,8 +128,14 @@ export default function HistoricalDataContent() {
             try {
                 setIsLoading(true);
                 const response = await getHistoricalData();
-                const sortedData = [...response.data].sort(
-                    (a, b) => new Date(b.tanggal).getTime() - new Date(a.tanggal).getTime()
+                setApiData(response.data);
+                
+                // Transform API data to match the expected format
+                const transformedData = transformData(response.data);
+                
+                // Sort data by date (newest first)
+                const sortedData = [...transformedData].sort(
+                    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
                 );
                 
                 // Define the instrument order
@@ -73,11 +152,11 @@ export default function HistoricalDataContent() {
                     'EUR/USD'
                 ];
                 
-                // Extract unique categories from data and sort according to the defined order
-                const uniqueCategories = Array.from(new Set(sortedData.map(item => item.category)));
+                // Get unique instruments from the API response
+                const uniqueInstruments = Array.from(new Set(response.data.map(item => item.symbol)));
                 
-                // Sort the categories based on the defined order
-                const sortedInstruments = uniqueCategories.sort((a, b) => {
+                // Sort the instruments based on the defined order
+                const sortedInstruments = uniqueInstruments.sort((a, b) => {
                     const indexA = instrumentOrder.indexOf(a);
                     const indexB = instrumentOrder.indexOf(b);
                     
@@ -121,16 +200,19 @@ export default function HistoricalDataContent() {
         fetchData();
     }, []);
 
-    // Fungsi untuk mengubah halaman
     const paginate = (pageNumber: number) => {
         setCurrentPage(pageNumber);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Reset ke halaman pertama saat filter berubah
+    // Reset to first page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedInstrument, fromDate, toDate]);
+        // Apply filters when any filter changes
+        if (dataHistorical.length > 0) {
+            applyFilters();
+        }
+    }, [selectedInstrument, fromDate, toDate, dataHistorical]);
 
     const applyFilters = () => {
         try {
@@ -148,7 +230,7 @@ export default function HistoricalDataContent() {
                 const startDate = new Date(fromDate);
                 startDate.setHours(0, 0, 0, 0);
                 result = result.filter(item => {
-                    const itemDate = new Date(item.tanggal);
+                    const itemDate = new Date(item.date);
                     itemDate.setHours(0, 0, 0, 0);
                     return itemDate >= startDate;
                 });
@@ -158,7 +240,7 @@ export default function HistoricalDataContent() {
                 const endDate = new Date(toDate);
                 endDate.setHours(23, 59, 59, 999);
                 result = result.filter(item => {
-                    const itemDate = new Date(item.tanggal);
+                    const itemDate = new Date(item.date);
                     return itemDate <= endDate;
                 });
             }
@@ -192,10 +274,25 @@ export default function HistoricalDataContent() {
             if (dataToDownload.length === 0) {
                 throw new Error('Tidak ada data yang tersedia untuk diunduh');
             }
-            const header = `${t('table.date')},${t('table.open')},${t('table.high')},${t('table.low')},${t('table.close')}\n`;
-            const rows = dataToDownload.map((row: HistoricalData) =>
-                `${row.tanggal},${row.open},${row.high},${row.low},${row.close}`
-            ).join("\n");
+            
+            // Create CSV header and rows
+            const header = `${t('table.date')},${t('table.symbol')},${t('table.open')},${t('table.high')},${t('table.low')},${t('table.close')},${t('table.change')},${t('table.volume')}\n`;
+            
+            const rows = dataToDownload.map((row: HistoricalData) => {
+                // Format values, handling null/undefined
+                const formatValue = (value: any) => value !== null && value !== undefined ? value : '';
+                
+                return [
+                    formatDate(row.date),
+                    `"${row.symbol}"`,
+                    formatValue(row.open),
+                    formatValue(row.high),
+                    formatValue(row.low),
+                    formatValue(row.close),
+                    formatValue(row.change),
+                    formatValue(row.volume)
+                ].join(',');
+            }).join('\n');
 
             const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
             const url = URL.createObjectURL(blob);
@@ -334,7 +431,7 @@ export default function HistoricalDataContent() {
                                 {currentItems.map((item, index) => (
                                     <tr key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB] hover:bg-[#FFF9F5]'}>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
-                                            {formatDate(item.tanggal)}
+                                            {formatDate(item.date)}
                                         </td>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                             {item.open}
