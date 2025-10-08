@@ -182,15 +182,16 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-12 pt-6 border-t border-gray-100">
-                    <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <div className="mt-12 pt-6 border-t border-gray-100 text-center">
+                    <div className="flex justify-center">
                         <p 
                             className="text-xs text-[#4C4C4C] whitespace-nowrap"
                             dangerouslySetInnerHTML={{ 
                                 __html: copyright.replace('{{year}}', currentYear.toString())
                             }} 
-                        />
-                        <span className="text-xs text-[#4C4C4C]">|</span>
+                        >
+                        </p>
+                        {/* <span className="text-xs text-[#4C4C4C]">|</span>
                         <div className="flex items-center gap-4">
                             <a href="/syarat-ketentuan" className="text-xs text-[#666666] hover:text-[#F2AC59] transition-colors whitespace-nowrap">
                                 {termsConditions}
@@ -201,7 +202,7 @@ const Footer = () => {
                             <a href="/disclaimer" className="text-xs text-[#666666] hover:text-[#F2AC59] transition-colors whitespace-nowrap">
                                 {disclaimer}
                             </a>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
