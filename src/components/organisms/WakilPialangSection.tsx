@@ -5,14 +5,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 interface WakilPialangSectionProps {
-  limit?: number;
   showHeader?: boolean;
   className?: string;
 }
 
 export default function WakilPialangSection({
   className = '',
-  limit = 6,
   showHeader = true
 }: WakilPialangSectionProps) {
   const { t } = useTranslation('wakil_pialang');
@@ -20,14 +18,12 @@ export default function WakilPialangSection({
   const [kota, setKota] = useState<KategoriWakilPialang[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const loadKota = async () => {
       try {
         setIsLoading(true);
         const data = await fetchKategoriWakilPialang();
-        // Batasi jumlah data yang ditampilkan sesuai dengan limit
-        setKota(data.slice(0, limit));
+        setKota(data);
         setError(null);
       } catch (err) {
         console.error('Error loading kategori wakil pialang:', err);
@@ -38,7 +34,7 @@ export default function WakilPialangSection({
     };
 
     loadKota();
-  }, [limit]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -52,8 +48,8 @@ export default function WakilPialangSection({
             </div>
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(limit)].map((_, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div key={item} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div className="animate-pulse space-y-4">
                   <div className="h-6 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-100 rounded w-1/2"></div>
