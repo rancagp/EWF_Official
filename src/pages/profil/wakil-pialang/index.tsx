@@ -4,6 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PageTemplate from "@/components/templates/PageTemplate";
 import ProfilContainer from "@/components/templates/PageContainer/Container";
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface KategoriPialang {
     id: number;
@@ -12,45 +13,13 @@ interface KategoriPialang {
     image?: string;
 }
 
-// Data dummy untuk pengembangan
-const dataDummy: KategoriPialang[] = [
-    { 
-        id: 1, 
-        nama_kategori: "Jakarta", 
-        slug: "jakarta",
-        image: "/images/cities/jakarta.jpg"
-    },
-    { 
-        id: 2, 
-        nama_kategori: "Yogyakarta", 
-        slug: "yogyakarta",
-        image: "/images/cities/yogyakarta.jpg"
-    },
-    { 
-        id: 3, 
-        nama_kategori: "Bali", 
-        slug: "bali",
-        image: "/images/cities/bali.jpg"
-    },
-    { 
-        id: 4, 
-        nama_kategori: "Makassar", 
-        slug: "makassar",
-        image: "/images/cities/makassar.jpg"
-    },
-    { 
-        id: 5, 
-        nama_kategori: "Bandung", 
-        slug: "bandung",
-        image: "/images/cities/bandung.jpg"
-    },
-    { 
-        id: 6, 
-        nama_kategori: "Semarang", 
-        slug: "semarang",
-        image: "/images/cities/semarang.jpg"
-    },
-];
+// Tipe data untuk kategori pialang
+interface KategoriPialang {
+    id: number;
+    nama_kategori: string;
+    slug: string;
+    image?: string;
+}
 
 export async function getStaticProps({ locale }: { locale: string }) {
     return {
@@ -62,9 +31,41 @@ export async function getStaticProps({ locale }: { locale: string }) {
 
 export default function WakilPialang() {
     const { t } = useTranslation('wakil_pialang');
-    const [kategori, setKategori] = useState<KategoriPialang[]>(dataDummy);
-    const [sedangMemuat, setSedangMemuat] = useState(false);
+    const router = useRouter();
+    const [kategori, setKategori] = useState<KategoriPialang[]>([]);
+    const [sedangMemuat, setSedangMemuat] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchKategori = async () => {
+            try {
+                setSedangMemuat(true);
+                const response = await fetch('/api/kategori-pialang');
+                
+                if (!response.ok) {
+                    throw new Error('Gagal memuat data kategori');
+                }
+                
+                const data = await response.json();
+                
+                // Tambahkan gambar default jika tidak ada
+                const kategoriDenganGambar = data.map((item: KategoriPialang) => ({
+                    ...item,
+                    image: item.image || `/images/cities/${item.slug}.jpg`
+                }));
+                
+                setKategori(kategoriDenganGambar);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+                setError('Gagal memuat data. Silakan coba lagi nanti.');
+            } finally {
+                setSedangMemuat(false);
+            }
+        };
+
+        fetchKategori();
+    }, []);
 
     if (sedangMemuat) {
         return (
