@@ -1,46 +1,34 @@
 // Sample data sebagai fallback jika API eksternal bermasalah
 const sampleData = [
   {
-    symbol: "DJIA",
-    last: 34500.23,
-    high: 34600.50,
-    low: 34300.75,
-    open: 34450.00,
-    time: new Date().toISOString(),
-    prevClose: 34450.00,
-    valueChange: 50.23,
-    percentChange: 0.15,
-    Volume: 0,
-    bid: 34500.00,
-    ask: 34500.50
+    symbol: "Gold",
+    last: 4037.75,
+    high: 4041.23,
+    low: 4001.8,
+    open: 4020.8,
+    prevClose: 4040.4,
+    valueChange: -2.65,
+    percentChange: -0.07
   },
   {
     symbol: "USD/IDR",
-    last: 14500.50,
-    high: 14520.75,
-    low: 14480.25,
-    open: 14500.00,
-    time: new Date().toISOString(),
-    prevClose: 14495.00,
-    valueChange: 5.50,
-    percentChange: 0.04,
-    Volume: 0,
-    bid: 14500.25,
-    ask: 14500.75
+    last: 16528,
+    high: 16574,
+    low: 16496,
+    open: 16574,
+    prevClose: 16575,
+    valueChange: -47,
+    percentChange: -0.28
   },
   {
-    symbol: "EUR/USD",
-    last: 1.0925,
-    high: 1.0930,
-    low: 1.0910,
-    open: 1.0920,
-    time: new Date().toISOString(),
-    prevClose: 1.0918,
-    valueChange: 0.0007,
-    percentChange: 0.06,
-    Volume: 0,
-    bid: 1.0924,
-    ask: 1.0926
+    symbol: "EURUSD",
+    last: 1.1647,
+    high: 1.1648,
+    low: 1.1626,
+    open: 1.1626,
+    prevClose: 1.1626,
+    valueChange: 0.0021,
+    percentChange: 0.18
   }
 ];
 
@@ -48,7 +36,7 @@ export default async function handler(req, res) {
   try {
     // Coba ambil data dari API eksternal
     const response = await fetch(
-      "https://www.newsmaker.id/quotes/live?s=LGD+LSI+GHSIK5+SN1M5+LCOPN5+DJIA+DAX+DX+AUDUSD+EURUSD+GBPUSD+CHF+JPY+RP",
+      "https://endpoapi-production-3202.up.railway.app/api/quotes",
       {
         headers: {
           'Accept': 'application/json',
@@ -65,39 +53,17 @@ export default async function handler(req, res) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const text = await response.text();
-    let data;
+    const result = await response.json();
     
-    try {
-      // Coba parse JSON langsung
-      data = JSON.parse(text);
-    } catch (parseError) {
-      // Jika gagal, coba bersihkan response
-      const cleanedText = text
-        .replace(/\s+/g, '') // Hapus spasi
-        .replace(/,,/g, ',')  // Perbaiki koma ganda
-        .replace(/,]/g, ']')  // Hapus koma sebelum penutup array
-        .replace(/},,/g, '},') // Perbaiki koma ganda antar objek
-        .replace(/}{/g, '},{') // Tambahkan koma yang hilang
-        .replace(/}\]/g, '}]'); // Perbaiki format penutup
-      
-      try {
-        data = JSON.parse(cleanedText);
-      } catch (e) {
-        // Jika masih gagal, gunakan sample data
-        console.error('Failed to parse API response, using sample data');
-        return res.status(200).json(sampleData);
-      }
+    if (result.status !== 'success' || !Array.isArray(result.data)) {
+      console.error('Invalid API response format, using sample data');
+      return res.status(200).json(sampleData);
     }
     
     // Proses data
-    const dataArray = Array.isArray(data) ? data : [data];
-    
-    const validItems = dataArray
-      .filter(item => item && item.symbol)
-      .map(item => ({
-        symbol: String(item.symbol || ''),
-        last: Number(item.last) || 0,
+    const validItems = result.data.map(item => ({
+      symbol: String(item.symbol || ''),
+      last: Number(item.last) || 0,
         high: Number(item.high) || 0,
         low: Number(item.low) || 0,
         open: Number(item.open) || 0,
