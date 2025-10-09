@@ -46,6 +46,7 @@ const baseMenuItems: NavItem[] = [
           { key: "about_general_videos", label: "Video", href: "/umum/video" },
         ],
       },
+      { key: "about_contact", label: "kontak", href: "/hubungi-kami" },
     ],
   },
   {
