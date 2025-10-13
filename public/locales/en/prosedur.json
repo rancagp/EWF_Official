@@ -60,7 +60,7 @@
   
   "registrasiOnline": {
     "title": "Online Registration Procedure",
-    "description": "Register your trading account easily and quickly online through PT. KONTAKPERKASA FUTURES. Follow these registration steps:",
+    "description": "Register your trading account easily and quickly online through PT Equityworld Futures. Follow these registration steps:",
     "steps": [
       "Fill out the online registration form with valid personal data",
       "Upload required documents (ID Card/Passport, Tax ID, etc.)",
@@ -85,7 +85,7 @@
   
   "ilustrasiTransaksi": {
     "title": "Transaction Illustration",
-    "description": "For those of you who want to invest in products from PT. KONTAKPERKASA FUTURES, you can see the transaction illustration below to further consider whether you are sure about this:",
+    "description": "For those of you who want to invest in products from PT Equityworld Futures, you can see the transaction illustration below to further consider whether you are sure about this:",
     "rumusPerhitungan": {
       "title": "Transaction Calculation Formula",
       "formula": "[(Selling Price – Buying Price) x Contract Size x n Lot] – [(Facility Fee + VAT) x n Lot]",
