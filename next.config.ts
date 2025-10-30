@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import nextI18nConfig from './next-i18next.config';
 
 const nextConfig: NextConfig = {
+  // Output standalone untuk Docker
+  output: 'standalone',
   // Konfigurasi i18n
   i18n: {
     ...nextI18nConfig.i18n,
