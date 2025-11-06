@@ -18,8 +18,7 @@ export default async function handler(
     res: NextApiResponse<Banner[] | { error: string }>
 ) {
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
-        const response = await fetch(`${apiUrl}/api/banners`);
+        const response = await fetch('https://ewf-admin.newsmaker.id/api/banners');
         
         if (!response.ok) {
             return res.status(response.status).json({ error: 'Gagal mengambil data banner' });
@@ -44,11 +43,13 @@ export default async function handler(
                 cleanPath = cleanPath.replace(/^storage\//, '');
             }
                 
+            // Cek apakah URL sudah lengkap
+            if (banner.image.startsWith('http')) {
+                return banner;
+            }
+            
             // Buat URL lengkap dengan path storage yang benar
-            // Gunakan URL lengkap untuk production, relative path untuk development
-            const isProduction = process.env.NODE_ENV === 'production';
-            const basePath = isProduction ? `${apiUrl}/storage` : '/storage';
-            const fullUrl = `${basePath}/banners/${cleanPath}`;
+            const fullUrl = `https://ewf-admin.newsmaker.id/storage/banners/${cleanPath}`;
             
             console.log('Processed image URL:', {
                 original: banner.image,
