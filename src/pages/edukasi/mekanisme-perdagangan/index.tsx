@@ -71,7 +71,7 @@ const MekanismePerdaganganPage = () => {
                         </div>
 
                         {/* Flowchart Section */}
-                        <div className="pt-4">
+                        {/* <div className="pt-4">
                             <h2 className="text-2xl font-bold text-center text-[#4C4C4D] mb-2">
                                 {t('flow.title')}
                             </h2>
@@ -106,7 +106,7 @@ const MekanismePerdaganganPage = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </ProfilContainer>
             </div>

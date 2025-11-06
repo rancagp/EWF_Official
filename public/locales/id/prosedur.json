@@ -135,7 +135,7 @@
   
   "ilustrasiTransaksi": {
     "title": "Ilustrasi Transaksi",
-    "description": "Untuk Anda yang ingin melakukan investasi dengan produk-produk dari PT. KONTAKPERKASA FUTURES, Anda dapat melihat ilustrasi transaksi dibawah ini, guna untuk mempertimbangkan lebih dalam lagi apakah Anda yakin dalam hal ini:",
+    "description": "Untuk Anda yang ingin melakukan investasi dengan produk-produk dari PT Equityworld Futures, Anda dapat melihat ilustrasi transaksi dibawah ini, guna untuk mempertimbangkan lebih dalam lagi apakah Anda yakin dalam hal ini:",
     "rumusPerhitungan": {
       "title": "Rumus Perhitungan Transaksi",
       "formula": "[(Harga Jual – Harga Beli) x Nilai Kontrak x n Lot] – [(Biaya Fasilitas + PPN) x n Lot]",
