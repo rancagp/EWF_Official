@@ -32,7 +32,14 @@ const nextConfig: NextConfig = {
   },
   // Environment variables
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://ewf-admin.newsmaker.id',
+    NEXT_PUBLIC_API_BASE_URL:
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://ewf-admin.newsmaker.id",
+    // kalau mau sekalian alias lama:
+    NEXT_PUBLIC_API_URL:
+      process.env.NEXT_PUBLIC_API_URL ||
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      "https://ewf-admin.newsmaker.id",
   },
   
   // Strict Mode
