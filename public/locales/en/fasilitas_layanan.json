@@ -1,51 +1,51 @@
 {
   "pageTitle": "Facilities & Services",
-  "pageDescription": "Information about the facilities and services available at PT. Equity World Futures",
+  "pageDescription": "Information about the facilities and services available at PT. Equityworld Futures",
   "services": [
     {
       "title": "Professional Futures Broker Representatives",
-      "description": "The company is supported by Professional Futures Broker Representatives who are certified by Bappebti.",
+      "description": "EWF is supported by certified Futures Broker Representatives who meet Bappebti’s competency and credibility standards, ensuring every client receives professional guidance.",
       "icon": ""
     },
     {
       "title": "2FA Security System",
-      "description": "Implementation of One Time Password (OTP) when logging into the online trading transaction system.",
+      "description": "To protect every transaction, EWF’s online trading system is equipped with Two-Factor Authentication (2FA) using One Time Password (OTP) as an additional security layer during login.",
       "icon": ""
     },
     {
       "title": "Online Trading & Demo Account",
-      "description": "A dedicated portal for online transactions with real-time spread prices, charts, and market information. Equipped with a Demo Account feature for transaction simulations.",
+      "description": "A responsive online trading platform equipped with real-time price spreads, interactive charts, and up-to-date market information. A Demo Account is also available so prospective clients can practice before entering real trading.",
       "icon": ""
     },
     {
       "title": "Online Registration",
-      "description": "Online registration facility for prospective clients through PT. Equity World Futures' official website.",
+      "description": "Prospective clients can open an account more conveniently through the online registration service on EWF’s official website, simplifying the onboarding process without the need to visit the office.",
       "icon": ""
     },
     {
       "title": "Daily Transaction Reports",
-      "description": "Daily transaction reports sent via client email, recording all transaction activities that have been carried out.",
+      "description": "All client trading activities are automatically sent via email as a daily statement, providing full transparency for every transaction.",
       "icon": ""
     },
     {
       "title": "Fund Withdrawal",
-      "description": "Withdrawal forms can be processed online. Funds can be processed within one business day (T+1) after all requirements are met."
+      "description": "Fund withdrawals can be requested online and are generally processed within one business day (T+1) after all requirements are fulfilled, offering convenience and speed for clients."
     },
     {
       "title": "Segregated Account",
-      "description": "All customer funds are placed in a Segregated Account approved by Bappebti and separated from company assets."
+      "description": "Client funds are placed in a Segregated Account in accordance with Bappebti regulations, ensuring fund security and complete separation from the company’s own assets."
     },
     {
       "title": "Transaction Flexibility",
-      "description": "Two-way transactions allow investors to profit whether the market rises or falls, with high product liquidity."
+      "description": "Investors can take advantage of both rising and falling price movements, supported by high liquidity and direct access to various trading instruments."
     },
     {
       "title": "Dispute Resolution",
-      "description": "Customer complaint handling refers to Bappebti Regulation Number 4 of 2020 concerning Guidelines for Customer Dispute Resolution in the Commodity Futures Trading Sector."
+      "description": "All customer complaints are handled in line with Bappebti Regulation Number 4 of 2020, ensuring a fair, structured, and well-documented resolution process."
     },
     {
       "title": "Sitna Program",
-      "description": "A transaction transparency program that allows customers to monitor transactions on the Jakarta Futures Exchange (JFX) and Indonesia Clearing House."
+      "description": "EWF provides clients with access to monitor their trading activities through the Customer Transaction Information System (SITNA) at the Jakarta Futures Exchange and Indonesia Clearing House, as a form of transparency and accountability."
     }
   ]
 }

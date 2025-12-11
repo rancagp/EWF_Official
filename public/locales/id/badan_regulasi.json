@@ -1,21 +1,21 @@
 {
   "pageTitle": "Badan Regulasi",
   "pageDescription": "Informasi tentang badan regulasi yang mengawasi kegiatan perdagangan berjangka",
-  "profile_description": "Berikut adalah daftar badan regulasi dan lembaga terkait yang mengawasi dan mendukung kegiatan perdagangan berjangka di Indonesia. Setiap lembaga memiliki peran dan tanggung jawab masing-masing dalam menciptakan ekosistem perdagangan yang transparan, adil, dan berkelanjutan.",
+  "profile_description": "Berikut adalah badan-badan regulasi utama yang mengawasi industri perdagangan berjangka dan sektor keuangan di Indonesia. Setiap lembaga memiliki peran strategis dalam menjaga stabilitas, transparansi, dan integritas pasar.",
   "bappebti": {
     "title": "BADAN PENGAWAS PERDAGANGAN BERJANGKA KOMODITI (BAPPEBTI)",
-    "description": "BAPPEBTI atau Badan Pengawas Perdagangan Berjangka Komoditi dibentuk berdasarkan Undang-Undang Nomor 32 Tahun 1997, BAPPEBTI merupakan salah satu unit eselon I berada di bawah Departemen Perdagangan. BAPPEBTI mempunyai tugas melaksanakan pembinaan, pengaturan, dan pengawasan kegiatan perdagangan berjangka berdasarkan kebijakan yang ditetapkan oleh Menteri dan peraturan perundang-undangan yang berlaku."
+    "description": "BAPPEBTI adalah lembaga pemerintah di bawah Kementerian Perdagangan yang diberi mandat untuk memastikan industri perdagangan berjangka berjalan secara tertib, transparan, dan aman. Melalui regulasi serta pengawasan yang ketat, BAPPEBTI menjaga kepercayaan publik dan integritas pasar, sehingga setiap kegiatan transaksi berjangka di Indonesia berlangsung sesuai aturan dan standar yang berlaku."
   },
   "bbj": {
-    "title": "BURSA BERJANGKA JAKARTA (BBJ)",
-    "description": "PT. Bursa Berjangka Jakarta merupakan bursa pertama yang didirikan dengan Undang-Undang ini. Ia didirikan pada tanggal 19 Agustus 1999 oleh 4 perkebunan sawit, 7 penyulingan sawit, 8 eksportir kopi, 8 perusahaan pialang pasar modal dan 2 perusahaan dagang. Modal disetor hanya sebesar 11,4 milyar Rupiah dari 40 milyar modal yang disetujui. Bursa Berjangka Jakarta memenuhi semua persyaratan yang ditulis dalam UU 32/1997 tersebut dan mendapat lisensi Bappebti pada semester kedua tahun 2000."
+    "title": "OTORITAS JASA KEUANGAN (OJK)",
+    "description": "Otoritas Jasa Keuangan merupakan lembaga independen negara yang bertugas menyelenggarakan sistem pengaturan dan pengawasan terintegrasi terhadap seluruh kegiatan di sektor jasa keuangan. OJK berfungsi memastikan industri keuangan berjalan secara transparan, adil, dan stabil, sehingga mampu melindungi kepentingan konsumen serta mendukung pertumbuhan ekonomi nasional."
   },
   "kbi": {
-    "title": "KLIRING BERJANGKA INDONESIA (KBI)",
-    "description": "PT KLIRING BERJANGKA INDONESIA (Persero) merupakan suatu Badan Usaha Milik Negara yang bercita-cita untuk menjadi suatu perusahaan domestik yang efektif dan pada akhirnya menjadi suatu perusahaan global yang berstandar international. Didirikan untuk mengkliringkan dan menjamin penyelesaian transaksi kontrak Berjangka/Derivatif/Spot & Forward dan Resi Gudang secara teratur, wajar, dan efisien sehingga mampu memelihara Integritas Finansial Pasar."
+    "title": "BANK INDONESIA (BI)",
+    "description": "Bank Indonesia adalah bank sentral Republik Indonesia yang memegang mandat utama menjaga kestabilan nilai rupiah. Melalui kebijakan moneter, sistem pembayaran yang andal, dan pengawasan makroprudensial, BI berperan strategis dalam menjaga stabilitas ekonomi dan mendukung sistem keuangan nasional yang kuat."
   },
   "sitna": {
     "title": "SISTEM INFORMASI TRANSAKSI NASIONAL (SITNA)",
-    "description": "Sistem Informasi Transaksi Nasional (SITNA) adalah sistem elektronik yang dibentuk oleh BAPPEBTI untuk mencatat dan melaporkan seluruh transaksi perdagangan berjangka komoditi yang dilakukan oleh Bursa Berjangka, Kliring Berjangka, dan Pialang Berjangka di Indonesia. SITNA berfungsi untuk meningkatkan transparansi, efisiensi, dan pengawasan di pasar modal berjangka, serta melindungi kepentingan masyarakat investor."
+    "description": "Sistem Informasi Transaksi Nasional (SITNA) adalah sistem elektronik yang dibentuk oleh BAPPEBTI untuk mencatat dan melaporkan seluruh transaksi perdagangan berjangka komoditi yang dilakukan oleh Bursa Berjangka, Kliring Berjangka, dan Pialang Berjangka di Indonesia. SITNA berfungsi untuk meningkatkan transparansi, efisiensi, dan pengawasan di pasar berjangka, serta melindungi kepentingan masyarakat investor."
   }
 }

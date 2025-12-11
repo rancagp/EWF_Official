@@ -1,51 +1,51 @@
 {
   "pageTitle": "Fasilitas & Layanan",
-  "pageDescription": "Informasi tentang fasilitas dan layanan yang tersedia di PT. Equity World Futures",
+  "pageDescription": "Informasi tentang fasilitas dan layanan yang tersedia di PT. Equityworld Futures",
   "services": [
     {
       "title": "Wakil Pialang Berjangka Profesional",
-      "description": "Perusahaan didukung oleh Wakil Pialang Berjangka Profesional yang telah disertifikasi oleh Bappebti.",
+      "description": "EWF didukung oleh tenaga Wakil Pialang Berjangka tersertifikasi yang memiliki kompetensi dan kredibilitas sesuai standar Bappebti, memastikan setiap nasabah mendapatkan bimbingan yang profesional.",
       "icon": ""
     },
     {
       "title": "Sistem Keamanan 2FA",
-      "description": "Penerapan One Time Password (OTP) pada saat login ke dalam sistem transaksi online trading.",
+      "description": "Untuk menjaga keamanan transaksi, sistem online trading EWF dilengkapi autentikasi OTP (One Time Password) sebagai lapisan perlindungan tambahan saat login.",
       "icon": ""
     },
     {
       "title": "Online Trading & Demo Account",
-      "description": "Portal khusus untuk bertransaksi online dengan spread price real-time, chart, dan informasi market. Dilengkapi fasilitas Demo Account untuk simulasi transaksi.",
+      "description": "Platform transaksi online yang responsif, dilengkapi spread harga real-time, chart interaktif, dan informasi pasar terkini. Tersedia juga Demo Account bagi calon nasabah untuk berlatih sebelum masuk ke perdagangan riil.",
       "icon": ""
     },
     {
       "title": "Registrasi Online",
-      "description": "Fasilitas pendaftaran online bagi calon nasabah melalui website resmi PT. Equity World Futures.",
+      "description": "Calon nasabah dapat membuka akun dengan lebih praktis melalui layanan registrasi online di website resmi EWF, memudahkan proses onboarding tanpa harus datang ke kantor.",
       "icon": ""
     },
     {
       "title": "Laporan Transaksi Harian",
-      "description": "Laporan transaksi harian yang dikirimkan melalui email nasabah, mencatat seluruh aktivitas transaksi yang telah dilakukan.",
+      "description": "Seluruh aktivitas perdagangan nasabah akan dikirimkan secara otomatis melalui email dalam bentuk statement harian, memberikan transparansi penuh atas setiap transaksi.",
       "icon": ""
     },
     {
       "title": "Penarikan Dana (Withdrawal)",
-      "description": "Formulir penarikan dana dapat dilakukan secara online. Dana dapat diproses dalam satu hari kerja (T+1) setelah semua ketentuan terpenuhi."
+      "description": "Proses penarikan dana dapat dilakukan secara online dan diproses dalam satu hari kerja (T+1) setelah seluruh persyaratan terpenuhi, memberikan kemudahan dan kecepatan bagi nasabah."
     },
     {
       "title": "Rekening Terpisah (Segregated Account)",
-      "description": "Seluruh dana nasabah ditempatkan di dalam Rekening Terpisah yang telah disetujui oleh Bappebti dan terpisah dari aset perusahaan."
+      "description": "Dana nasabah ditempatkan pada Rekening Terpisah sesuai ketentuan Bappebti, memastikan keamanan dana serta pemisahan penuh dari aset perusahaan."
     },
     {
       "title": "Fleksibilitas Transaksi",
-      "description": "Transaksi dua arah memungkinkan investor mendapatkan keuntungan baik saat market naik maupun turun, dengan likuiditas produk yang tinggi."
+      "description": "Investor dapat memanfaatkan peluang pada pergerakan harga naik maupun turun, dengan likuiditas tinggi dan akses langsung ke berbagai instrumen perdagangan."
     },
     {
       "title": "Sarana Penyelesaian Perselisihan",
-      "description": "Penanganan pengaduan nasabah mengacu pada Peraturan Bappebti Nomor 4 Tahun 2020 tentang Pedoman Penyelesaian Perselisihan Nasabah di Bidang Perdagangan Berjangka Komoditi."
+      "description": "Seluruh penanganan pengaduan nasabah mengikuti pedoman resmi Peraturan Bappebti Nomor 4 Tahun 2020, menjamin proses penyelesaian yang adil dan terstruktur."
     },
     {
-      "title": "Program Sitna",
-      "description": "Program transparansi transaksi yang memungkinkan nasabah memantau transaksi pada Bursa Berjangka Jakarta (BBJ) dan Kliring Berjangka Indonesia."
+      "title": "Program SITNA",
+      "description": "EWF menyediakan akses kepada nasabah untuk memantau aktivitas transaksi melalui Sistem Informasi Transaksi Nasabah (SITNA) pada Bursa Berjangka Jakarta dan Kliring Berjangka Indonesia, sebagai wujud transparansi dan akuntabilitas."
     }
   ]
 }

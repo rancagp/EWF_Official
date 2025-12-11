@@ -1,21 +1,21 @@
 {
   "pageTitle": "Regulatory Bodies",
-  "pageDescription": "Information about regulatory bodies overseeing futures trading activities",
-  "profile_description": "The following is a list of regulatory bodies and related institutions that oversee and support futures trading activities in Indonesia. Each institution has its own role and responsibility in creating a transparent, fair, and sustainable trading ecosystem.",
+  "pageDescription": "Information about regulatory bodies overseeing futures trading and financial system stability in Indonesia",
+  "profile_description": "Below are the key regulatory authorities overseeing the futures trading industry and the broader financial sector in Indonesia. Each institution plays a strategic role in maintaining market stability, transparency, and integrity.",
   "bappebti": {
     "title": "COMMODITY FUTURES TRADING REGULATORY AGENCY (BAPPEBTI)",
-    "description": "BAPPEBTI or the Commodity Futures Trading Regulatory Agency was established based on Law Number 32 of 1997. BAPPEBTI is one of the echelon I units under the Ministry of Trade. BAPPEBTI is responsible for fostering, regulating, and supervising futures trading activities based on policies set by the Minister and applicable laws and regulations."
+    "description": "BAPPEBTI is a government institution under the Ministry of Trade mandated to ensure that the commodity futures trading industry operates in an orderly, transparent, and secure manner. Through strict regulation and supervision, BAPPEBTI helps maintain public trust and market integrity so that all futures transactions in Indonesia comply with applicable rules and standards."
   },
   "bbj": {
-    "title": "JAKARTA FUTURES EXCHANGE (JFX)",
-    "description": "PT. Jakarta Futures Exchange is the first exchange established under this Law. It was established on August 19, 1999, by 4 palm plantations, 7 palm oil refineries, 8 coffee exporters, 8 securities brokerage companies, and 2 trading companies. The paid-up capital was only IDR 11.4 billion out of the approved IDR 40 billion. The Jakarta Futures Exchange meets all the requirements written in Law 32/1997 and received Bappebti's license in the second half of 2000."
+    "title": "FINANCIAL SERVICES AUTHORITY (OJK)",
+    "description": "The Financial Services Authority (OJK) is an independent state institution responsible for implementing an integrated regulatory and supervisory system for all activities in the financial services sector. OJK ensures that the financial industry operates in a transparent, fair, and stable manner, protecting consumer interests while supporting sustainable national economic growth."
   },
   "kbi": {
-    "title": "INDONESIA COMMODITY & DERIVATIVES EXCHANGE (ICDX)",
-    "description": "PT Kliring Berjangka Indonesia (Persero) is a State-Owned Enterprise that aspires to become an effective domestic company and eventually a global company with international standards. It was established to clear and guarantee the settlement of Futures/Derivatives/Spot & Forward contracts and Warehouse Receipts in an orderly, fair, and efficient manner to maintain Market Financial Integrity."
+    "title": "BANK INDONESIA (BI)",
+    "description": "Bank Indonesia is the central bank of the Republic of Indonesia, mandated primarily to maintain the stability of the rupiah. Through monetary policy, a reliable payment system, and macroprudential supervision, Bank Indonesia plays a strategic role in safeguarding economic stability and supporting a strong and resilient national financial system."
   },
   "sitna": {
     "title": "NATIONAL TRANSACTION INFORMATION SYSTEM (SITNA)",
-    "description": "The National Transaction Information System (SITNA) is an electronic system established by BAPPEBTI to record and report all commodity futures trading transactions conducted by Futures Exchanges, Clearing Houses, and Futures Brokers in Indonesia. SITNA functions to enhance transparency, efficiency, and supervision in the futures capital market, as well as to protect the interests of investor communities."
+    "description": "The National Transaction Information System (SITNA) is an electronic system established by BAPPEBTI to record and report all commodity futures trading transactions carried out by Futures Exchanges, Clearing Houses, and Futures Brokers in Indonesia. SITNA is designed to enhance transparency, efficiency, and supervisory capabilities in the futures market, as well as to protect the interests of investors."
   }
 }
