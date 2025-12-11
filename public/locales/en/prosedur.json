@@ -290,37 +290,37 @@
   "segregatedAccountNote": "(Segregated Account is required to ensure that client funds cannot be used for any other purpose except for transaction purposes)",
 
   "penarikanDana": {
-    "title": "Withdrawal Procedure",
-    "description": "Funds Withdrawal can be made at any time by the Client as desired, provided that the withdrawn amount does not exceed the <span class='font-medium'>Effective Margin</span> stated in the Client's daily transaction report (<span class='italic'>Statement Report</span>).",
-    "prosesTitle": "Funds Withdrawal Process (<span class='italic'>Withdrawal</span>)",
+    "title": "Funds Withdrawal Procedure (Withdrawal)",
+    "description": "PT Equityworld Futures ensures that the funds withdrawal process is transparent, efficient, and fully compliant with regulations. Clients may submit a withdrawal request at any time, as long as the requested amount does not exceed the <span class='font-medium'>Effective Margin</span> recorded in their daily transaction report (<span class='italic'>Statement Report</span>).",
+    "prosesTitle": "Funds Withdrawal Flow",
     "prosesSteps": [
-      "Client logs in to the <span class='font-medium'>Withdrawal</span> menu on the real trading account to submit a withdrawal request in accordance with the applicable terms and conditions.",
-      "Client fills out the withdrawal application form completely and correctly.",
-      "Funds can only be transferred to an account under the Client's name that matches the previously approved Account Opening Application document.",
-      "The standard withdrawal process takes a maximum of <span class='font-medium'>three working days (T+3)</span>. However, PT Equityworld Futures is committed to expediting the process to be completed within <span class='font-medium'>one working day (T+1)</span>."
+      "Clients submit a withdrawal request via the <span class='font-medium'>Withdrawal</span> menu in their live trading account, in accordance with the applicable terms and conditions.",
+      "The withdrawal request form must be completed accurately and in full so that the process can run smoothly without delays.",
+      "Funds can only be transferred to a bank account under the Client’s own name, as stated in the verified Account Opening documents.",
+      "The standard processing time is a maximum of <span class='font-medium'>three business days (T+3)</span>, but PT Equityworld Futures strives to complete each request within <span class='font-medium'>one business day (T+1)</span> as part of its service commitment."
     ]
   },
   
   "petunjukTransaksi": {
-    "title": "TRADING INSTRUCTIONS",
-    "description": "Clients can submit orders online or via telephone (it is recommended that clients conduct simulations first before using real online trading).",
-    "description2": "Clients who submit orders online will receive a User ID and Password from PT. Equityworld Futures.",
-    "onlineRequirements": "To conduct online transactions, the following requirements must be met:",
+    "title": "TRADING GUIDELINES",
+    "description": "PT Equityworld Futures provides two methods for submitting trading orders: online and by telephone. Before entering the live trading environment, clients are encouraged to first use the simulation features so they can better understand the flow and functions of the online trading system.",
+    "description2": "For online transactions, clients will receive an official User ID and Password from PT Equityworld Futures as their primary access credentials to the trading platform.",
+    "onlineRequirements": "To be able to trade online, please ensure the following requirements are met:",
     "requirements": [
-      "Internet Connection Available",
+      "Have an active and stable internet connection.",
       {
-        "text": "Access to",
+        "text": "Access the official trading platform via:",
         "link": {
           "url": "http://etrade.ew-futures.com/login.php",
           "text": "http://etrade.ew-futures.com/login.php"
         }
       },
-      "Client already has a User ID and Password from PT. Equityworld Futures (Password can be changed by the client)"
+      "A valid online trading User ID and Password have been issued by PT Equityworld Futures (the Password can be changed by the client for security purposes)."
     ],
     "note": "Note: For each transaction, clients can only buy or sell a maximum of 50 lots.",
     "attention": {
       "title": "Attention:",
-      "content": "Clients are required to read and understand the terms and conditions of online trading presented on the opening page. If a client logs into the online system and conducts transactions, it means the client accepts all consequences related to such transactions."
+      "content": "Clients are required to read and understand the terms and conditions of the online trading system as presented on the opening page. By logging into the system and executing transactions, clients are deemed to have accepted all consequences related to such transactions."
     }
   }
 }

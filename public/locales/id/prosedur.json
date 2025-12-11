@@ -338,32 +338,32 @@
   "segregatedAccountNote": "(Rekening Terpisah / Segregated Account diperlukan untuk menjamin bahwa dana nasabah tidak bisa digunakan untuk tujuan lain kecuali kepentingan transaksi)",
 
   "penarikanDana": {
-    "title": "Prosedur Penarikan",
-    "description": "Penarikan Dana (<span class='italic'>Withdrawal</span>) dapat dilakukan kapan saja oleh Nasabah apabila diinginkan, dengan catatan dana yang ditarik tidak melebihi jumlah <span class='font-medium'>Effective Margin</span> yang tercantum dalam laporan transaksi harian Nasabah (<span class='italic'>Statement Report</span>).",
-    "prosesTitle": "Proses Penarikan Dana (<span class='italic'>Withdrawal</span>)",
+    "title": "Prosedur Penarikan Dana (Withdrawal)",
+    "description": "PT Equityworld Futures memastikan proses penarikan dana berjalan transparan, cepat, dan sesuai regulasi. Nasabah dapat mengajukan penarikan kapan pun selama jumlah yang diminta tidak melebihi <span class='font-medium'>Effective Margin</span> yang tercatat dalam laporan transaksi harian (<span class='italic'>Statement Report</span>).",
+    "prosesTitle": "Alur Penarikan Dana",
     "prosesSteps": [
-      "Nasabah masuk ke menu <span class='font-medium'>Withdrawal</span> pada akun transaksi riil untuk melakukan permohonan penarikan dana dengan mengikuti syarat dan ketentuan yang berlaku.",
-      "Nasabah mengisi formulir permohonan penarikan dana secara lengkap dan benar.",
-      "Dana hanya dapat ditransfer ke rekening atas nama Nasabah yang sesuai dengan dokumen Aplikasi Pembukaan Rekening yang telah disahkan sebelumnya.",
-      "Proses penarikan dana melalui mekanisme standar memerlukan waktu maksimum <span class='font-medium'>tiga hari kerja (T+3)</span>. Namun, PT Equityworld Futures berkomitmen untuk mempercepat proses agar dapat diselesaikan dalam waktu <span class='font-medium'>satu hari kerja (T+1)</span>."
+      "Nasabah melakukan permohonan penarikan melalui menu <span class='font-medium'>Withdrawal</span> pada akun transaksi riil, sesuai ketentuan yang berlaku.",
+      "Formulir permohonan penarikan diisi secara lengkap dan akurat agar proses dapat berjalan tanpa hambatan.",
+      "Dana hanya dapat ditransfer ke rekening atas nama Nasabah sebagaimana tercantum pada dokumen pembukaan rekening yang telah diverifikasi sebelumnya.",
+      "Proses standar membutuhkan waktu maksimal <span class='font-medium'>tiga hari kerja (T+3)</span>, namun PT Equityworld Futures berupaya menyelesaikan setiap permohonan dalam waktu <span class='font-medium'>satu hari kerja (T+1)</span>."
     ]
   },
-  
+
   "petunjukTransaksi": {
     "title": "PETUNJUK TRANSAKSI",
-    "description": "Nasabah dapat menyampaikan amanat secara online dan atau melalui telepon (dianjurkan nasabah melakukan simulasi terlebih dulu sebelum menggunakan real online trading).",
-    "description2": "Nasabah yang menyampaikan amanat secara online akan memperoleh User ID dan Password dari PT. Equityworld Futures.",
-    "onlineRequirements": "Untuk melakukan transaksi secara online, harus terpenuhi antara lain:",
+    "description": "PT Equityworld Futures menyediakan dua metode penyampaian amanat transaksi, yaitu secara online maupun melalui telepon. Sebelum memasuki sistem transaksi riil, nasabah dianjurkan melakukan simulasi terlebih dahulu agar lebih memahami alur dan fitur online trading.",
+    "description2": "Untuk transaksi online, Nasabah akan memperoleh User ID dan Password resmi dari PT Equityworld Futures sebagai akses utama ke dalam platform.",
+    "onlineRequirements": "Untuk dapat melakukan transaksi online, pastikan hal-hal berikut terpenuhi:",
     "requirements": [
-      "Tersedia Jaringan Internet",
+      "Memiliki koneksi internet yang aktif dan stabil.",
       {
-        "text": "Akses ke",
+        "text": "Mengakses platform resmi melalui:",
         "link": {
           "url": "http://etrade.ew-futures.com/login.php",
           "text": "http://etrade.ew-futures.com/login.php"
         }
       },
-      "Nasabah sudah mempunyai User ID dan Password dari PT. Equityworld Futures (Password dapat diganti oleh nasabah)"
+      "User ID dan Password online trading telah diterbitkan oleh PT Equityworld Futures (Password dapat diubah sendiri oleh Nasabah demi keamanan)."
     ],
     "note": "Catatan: Untuk setiap transaksi, nasabah hanya dapat membeli atau menjual maksimum 50 lot.",
     "attention": {

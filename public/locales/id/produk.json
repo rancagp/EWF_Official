@@ -9,24 +9,24 @@
   "defaultDescription": "Temukan peluang investasi terbaik dengan produk unggulan kami.",
   "productAdvantages": {
     "title": "Keunggulan Produk",
-    "description": "PT Equityworld Futures adalah salah satu perusahaan pialang berjangka yang bergerak dibidang perdagangan komoditi dan konsisten dalam misi pengembangan iklim investasi di Indonesia.",
+    "description": "Keunggulan produk PT Equityworld Futures dirancang untuk mendukung strategi perdagangan nasabah secara efisien, fleksibel, dan kompetitif.",
     "advantagesTitle": "Keunggulan Produk PT Equityworld Futures:",
     "advantages": [
       {
         "title": "Efisiensi Modal",
-        "description": "Dalam bertransaksi menggunakan Margin Trading (dana jaminan), dengan demikian para investor dapat melakukan transaksi yang besar dengan modal yang relatif kecil. Dengan dana minimal sebesar 10% dari nilai total transaksi, tidak perlu dana 100%."
+        "description": "Melalui sistem Margin Trading, nasabah dapat mengelola transaksi dengan nilai besar tanpa harus menyediakan dana penuh. Cukup sekitar 10% dari nilai kontrak, investor sudah dapat mengakses peluang pasar yang sebelumnya hanya mungkin dilakukan dengan modal yang jauh lebih besar. Pendekatan ini memberikan ruang gerak finansial yang lebih efisien dan strategis."
       },
       {
         "title": "Fleksibilitas Transaksi",
-        "description": "Transaksi dua arah yang memungkinkan para investor untuk mendapatkan peluang pada saat pasar bergerak naik maupun turun."
+        "description": "Produk-produk EWF dirancang untuk mendukung strategi dua arah, sehingga nasabah memiliki kesempatan meraih potensi hasil baik saat pasar menguat maupun melemah. Fleksibilitas ini memungkinkan manajemen risiko dan strategi perdagangan yang lebih dinamis."
       },
       {
-        "title": "Pergerakan Harga Sangat Fluktuatif",
-        "description": "Pergerakan harga harian yang besar dengan range berkisar 100 - 500 poin memberikan peluang keuntungan yang besar dengan kontrak size US $ 5 / point dan hanya dibebankan biaya transaksi / Fee sebesar 3 (Tiga) poin ditambah PPN 11%."
+        "title": "Pergerakan Harga yang Kompetitif",
+        "description": "Instrumen yang diperdagangkan memiliki volatilitas harian yang menarik, dengan rentang pergerakan 100 hingga 500 poin. Dengan kontrak berukuran USD 5 per poin dan biaya transaksi yang kompetitif, peluang optimalisasi hasil menjadi semakin terbuka, tentu tetap dalam batas peraturan yang berlaku."
       },
       {
         "title": "Likuiditas Tinggi",
-        "description": "Produk ini memiliki tingkat likuiditas yang sangat tinggi, dengan begitu para investor dapat melakukan transaksi beli dan jual kapan saja selama market berjalan, tanpa harus ada antrian di harga pasar."
+        "description": "Seluruh produk yang ditawarkan hadir dengan tingkat likuiditas yang prima. Nasabah dapat membuka dan menutup posisi kapan pun selama jam perdagangan tanpa hambatan antre harga, sehingga eksekusi transaksi dapat berlangsung cepat dan efisien."
       }
     ],
     "investmentTypes": {

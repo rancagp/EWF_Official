@@ -9,24 +9,24 @@
   "defaultDescription": "Discover the best investment opportunities with our featured products.",
   "productAdvantages": {
     "title": "Product Advantages",
-    "description": "PT Equityworld Futures is a futures brokerage company engaged in commodity trading and is consistent in its mission to develop the investment climate in Indonesia.",
+    "description": "The product advantages of PT Equityworld Futures are designed to support clients’ trading strategies in an efficient, flexible, and competitive way.",
     "advantagesTitle": "PT Equityworld Futures Product Advantages:",
     "advantages": [
       {
         "title": "Capital Efficiency",
-        "description": "In trading using Margin Trading (margin funds), investors can conduct large transactions with relatively small capital. With a minimum fund of 10% of the total transaction value, 100% capital is not required."
+        "description": "Through the Margin Trading system, clients can manage transactions with large notional values without providing full capital. By allocating around 10% of the contract value as margin, investors can access market opportunities that would normally require much larger capital, allowing for more efficient and strategic use of funds."
       },
       {
         "title": "Transaction Flexibility",
-        "description": "Two-way transactions allow investors to take advantage of opportunities whether the market is moving up or down."
+        "description": "EWF products are designed to support two-way trading strategies, giving clients the opportunity to seek potential returns in both rising and falling markets. This flexibility enables more dynamic risk management and trading approaches."
       },
       {
-        "title": "Highly Fluctuating Price Movements",
-        "description": "Large daily price movements ranging from 100-500 points provide significant profit opportunities with a contract size of US $5/point and only charged a transaction fee/Fee of 3 (Three) points plus 11% VAT."
+        "title": "Competitive Price Movements",
+        "description": "The traded instruments offer attractive daily volatility, with typical price ranges of 100–500 points. Combined with a contract size of USD 5 per point and competitive transaction fees, this creates meaningful opportunities to optimize trading results, while still remaining within the applicable regulatory framework."
       },
       {
         "title": "High Liquidity",
-        "description": "This product has a very high level of liquidity, allowing investors to conduct buy and sell transactions at any time during market hours, without having to queue at market prices."
+        "description": "All offered products feature strong liquidity. Clients can open and close positions at any time during trading hours without long order queues, enabling fast and efficient trade execution in line with market movements."
       }
     ],
     "investmentTypes": {
