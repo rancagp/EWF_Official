@@ -2,7 +2,7 @@
   "pageTitle": "Business Legality",
   "pageDescription": "Official licenses and permits of PT Equityworld Futures",
   "aboutTitle": "About Our Legality",
-  "aboutDescription": "The futures industry in Indonesia is overseen by official government institutions that function to supervise, regulate, and maintain market stability and integrity. These institutions are BAPPEBTI, JAKARTA FUTURES EXCHANGE (JFX), and INDONESIA CLEARING HOUSE (KBI).",
+  "aboutDescription": "PT Equityworld Futures operates within Indonesia’s national regulatory framework and is directly supervised by the Commodity Futures Trading Regulatory Agency (Bappebti). All company activities follow government standards on supervision, protection, and governance to ensure that futures trading is conducted in a transparent, trustworthy, and fully compliant manner.",
   "importantNotice": {
     "title": "PT. Equityworld Futures Legality:",
     "description": ""
@@ -13,57 +13,57 @@
   "legalitasItems": [
     {
       "title": "Deed of Establishment of Limited Liability Company",
-      "description": "Number: 01 dated July 2, 2005 by Notary Tan Susy, SH, PT. Goldmany Futures.",
+      "description": "Established under Deed No. 01 dated 2 July 2005 by Notary Tan Susy, S.H., under the original name PT Goldmany Futures.",
       "icon": "📜"
     },
     {
       "title": "Ministry of Law and Human Rights Ratification",
-      "description": "Number: C-29097 HT.01.010 TH.2005",
+      "description": "Ratified by the Ministry of Law and Human Rights through Decree No. C-29097 HT.01.010 TH.2005.",
       "icon": "📋"
     },
     {
       "title": "Deed of Name Change",
-      "description": "PT. Goldmany Futures to PT. Equity-world Futures Number: 11 dated November 4, 2008, by Notary Tan Susy, SH.",
+      "description": "The company’s name was officially changed to PT Equityworld Futures under Deed No. 11 dated 4 November 2008 by Notary Tan Susy, S.H.",
       "icon": "🏛️"
     },
     {
-      "title": "Ministry of Law and Human Rights Ratification",
-      "description": "Number: AHU-95798. AH .01.02.YEAR.2008",
+      "title": "Ministry of Law and Human Rights Ratification of Name Change",
+      "description": "Name change ratified by the Ministry of Law and Human Rights through Decree No. AHU-95798.AH.01.02.2008.",
       "icon": "🔗"
     },
     {
       "title": "Stock Exchange Member Approval Letter (SPAB)",
-      "description": "SPAB at Jakarta Futures Exchange Number: SPAB-143/BBJ/09/05",
+      "description": "Registered as a member of the Jakarta Futures Exchange (JFX) under SPAB No. SPAB-143/BBJ/09/05.",
       "icon": "⚖️"
     },
     {
       "title": "Futures Brokerage Business License",
-      "description": "Decision of the Head of BAPPEBTI Number: 850/BAPPEBTI/SI/12/2005",
+      "description": "Futures brokerage business license granted under the Decision of the Head of Bappebti No. 850/BAPPEBTI/SI/12/2005.",
       "icon": "📄"
     },
     {
       "title": "Indonesia Clearing House Membership",
-      "description": "Number: 36/AK-KBI/IV/2006",
+      "description": "Officially registered as a member of Indonesia Clearing House (KBI) under No. 36/AK-KBI/IV/2006.",
       "icon": "💼"
     },
     {
-      "title": "Cooperation Agreement with Organizing Trader",
-      "description": "Alternative Trading System PT. Royal Assetindo, Cooperation Agreement Letter, Number: 162/GM/DIR/V/2006",
+      "title": "Alternative Trading System Cooperation Agreement",
+      "description": "Cooperation agreement on the Alternative Trading System with PT Royal Assetindo under Letter No. 162/GM/DIR/V/2006.",
       "icon": "🏢"
     },
     {
       "title": "BAPPEBTI Decree for SPA Participant",
-      "description": "Number: 1524/BAPPEBTI/SP/4/2007 concerning Approval as a Participant of the Alternative Trading System (SPA) for PT. Goldmany Futures",
+      "description": "Approved as a Participant of the Alternative Trading System (SPA) under Bappebti Decree No. 1524/BAPPEBTI/SP/4/2007.",
       "icon": "📝"
     },
     {
       "title": "BAPPEBTI Decree for Name Change",
-      "description": "Number: 05/BAPPEBTI/PN/3/2009 concerning Approval of Name Change from PT. Goldmany Futures to PT. Equityworld Futures",
+      "description": "Approval of the name change from PT Goldmany Futures to PT Equityworld Futures under Bappebti Decree No. 05/BAPPEBTI/PN/3/2009.",
       "icon": "📑"
     },
     {
       "title": "Online Futures Broker",
-      "description": "Designation as a Futures Broker conducting Electronic On-Line Customer Acceptance in the Field of Commodity Futures Trading for PT. Equityworld Futures Number: 26/BAPPEBTI/KEP-PBK/08/2014",
+      "description": "Designation as a Futures Broker authorized to conduct electronic (online) client onboarding in the field of Commodity Futures Trading under Bappebti Decree No. 26/BAPPEBTI/KEP-PBK/08/2014.",
       "icon": "💻"
     }
   ]

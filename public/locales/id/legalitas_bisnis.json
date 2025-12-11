@@ -2,7 +2,7 @@
   "pageTitle": "Legalitas Bisnis",
   "pageDescription": "Legalitas dan perizinan resmi PT Equityworld Futures",
   "aboutTitle": "Tentang Legalitas Kami",
-  "aboutDescription": "Industri berjangka di Indonesia dinaungi oleh lembaga-lembaga resmi milik pemerintah yang berfungsi mengawasi, mengatur dan menjaga stabilitas dan integritas pasar. Lembaga yang dimaksud adalah BAPPEBTI, BURSA BERJANGKA JAKARTA (BBJ) dan LEMBAGA KLIRING BERJANGKA INDONESIA (KBI).",
+  "aboutDescription": "PT Equityworld Futures beroperasi di bawah kerangka regulasi nasional yang diawasi langsung oleh Badan Pengawas Perdagangan Berjangka Komoditi (BAPPEBTI). Seluruh aktivitas perusahaan mengikuti standar pengawasan, perlindungan, dan tata kelola yang ditetapkan pemerintah untuk memastikan perdagangan berjangka berlangsung transparan, terpercaya, dan sesuai ketentuan yang berlaku.",
   "importantNotice": {
     "title": "Legalitas PT. Equityworld Futures:",
     "description": ""
@@ -13,57 +13,57 @@
   "legalitasItems": [
     {
       "title": "Akta Pendirian Perseroan Terbatas",
-      "description": "Nomor: 01 tanggal 2 Juli 2005 oleh Notaris Tan Susy, SH, PT. Goldmany Futures.",
+      "description": "Diresmikan melalui Akta Nomor 01 tanggal 2 Juli 2005 oleh Notaris Tan Susy, S.H., dengan nama awal PT Goldmany Futures.",
       "icon": "📜"
     },
     {
       "title": "Pengesahan Departemen Hukum dan HAM",
-      "description": "Nomor: C-29097 HT.01.010 TH.2005",
+      "description": "Disahkan melalui Surat Keputusan Nomor C-29097 HT.01.010 TH.2005.",
       "icon": "📋"
     },
     {
       "title": "Akta Perubahan Nama",
-      "description": "PT. Goldmany Futures menjadi PT. Equity-world Futures Nomor: 11 tanggal 4 November 2008, oleh Notaris Tan Susy, SH.",
+      "description": "Perusahaan resmi berganti nama menjadi PT Equityworld Futures berdasarkan Akta Nomor 11 tanggal 4 November 2008 oleh Notaris Tan Susy, S.H.",
       "icon": "🏛️"
     },
     {
       "title": "Pengesahan Kementerian Hukum dan HAM",
-      "description": "Nomor: AHU-95798. AH .01.02.TAHUN.2008",
+      "description": "Pengesahan perubahan nama melalui Surat Keputusan Kementerian Hukum dan HAM Nomor AHU-95798.AH.01.02.Tahun 2008.",
       "icon": "🔗"
     },
     {
       "title": "Surat Persetujuan Anggota Bursa (SPAB)",
-      "description": "SPAB di Bursa Berjangka Jakarta Nomor: SPAB-143/BBJ/09/05",
+      "description": "Terdaftar sebagai Anggota Bursa Berjangka Jakarta dengan Nomor SPAB-143/BBJ/09/05.",
       "icon": "⚖️"
     },
     {
       "title": "Izin Usaha Pialang Berjangka",
-      "description": "Keputusan Kepala BAPPEBTI Nomor: 850/BAPPEBTI/SI/12/2005",
+      "description": "Ditetapkan berdasarkan Keputusan Kepala BAPPEBTI Nomor 850/BAPPEBTI/SI/12/2005.",
       "icon": "📄"
     },
     {
       "title": "Keanggotaan Lembaga Kliring Berjangka Indonesia",
-      "description": "Nomor: 36/AK-KBI/IV/2006",
+      "description": "Resmi terdaftar sebagai anggota Kliring Berjangka Indonesia dengan Nomor 36/AK-KBI/IV/2006.",
       "icon": "💼"
     },
     {
-      "title": "Perjanjian Kerjasama dengan Pedagang Penyelenggara",
-      "description": "Sistem Perdagangan Alternatif PT. Royal Assetindo, Surat Perjanjian Kerjasama, Nomor: 162/GM/DIR/V/2006",
+      "title": "Perjanjian Kerjasama Sistem Perdagangan Alternatif",
+      "description": "Kerja sama dengan PT Royal Assetindo melalui Surat Nomor 162/GM/DIR/V/2006.",
       "icon": "🏢"
     },
     {
       "title": "SK BAPPEBTI Peserta SPA",
-      "description": "Nomor: 1524/BAPPEBTI/SP/4/2007 tentang Pemberian Persetujuan sebagai Peserta Sistem Perdagangan Alternatif (SPA) kepada PT. Goldmany Futures",
+      "description": "Persetujuan sebagai Peserta Sistem Perdagangan Alternatif (SPA) berdasarkan SK BAPPEBTI Nomor 1524/BAPPEBTI/SP/4/2007.",
       "icon": "📝"
     },
     {
       "title": "SK BAPPEBTI Perubahan Nama",
-      "description": "Nomor: 05/BAPPEBTI/PN/3/2009 tentang Persetujuan Perubahan Nama PT. Goldmany Futures menjadi PT. Equityworld Futures",
+      "description": "Persetujuan perubahan nama dari PT Goldmany Futures menjadi PT Equityworld Futures berdasarkan SK BAPPEBTI Nomor 05/BAPPEBTI/PN/3/2009.",
       "icon": "📑"
     },
     {
       "title": "Pialang Berjangka Online",
-      "description": "Penetapan sebagai Pialang Berjangka yang melakukan kegiatan penerimaan Nasabah secara Elektronik On-Line di Bidang Perdagangan Berjangka Komoditi kepada PT. Equityworld Futures Nomor: 26/BAPPEBTI/KEP-PBK/08/2014",
+      "description": "Penetapan sebagai Pialang Berjangka yang melaksanakan registrasi nasabah secara elektronik (online) melalui Surat Penetapan BAPPEBTI Nomor 26/BAPPEBTI/KEP-PBK/08/2014.",
       "icon": "💻"
     }
   ]
