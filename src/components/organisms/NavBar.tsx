@@ -65,8 +65,8 @@ const baseMenuItems: NavItem[] = [
     label: "Prosedur",
     submenu: [
       { key: "procedures_onlineRegistration", label: "Pendaftaran Online", href: "/prosedur/registrasi-online" },
-      { key: "procedures_withdrawal", label: "Penarikan Dana", href: "/prosedur/penarikan" },
       { key: "procedures_transactionGuide", label: "Panduan Transaksi", href: "/prosedur/petunjuk-transaksi" },
+      { key: "procedures_withdrawal", label: "Penarikan Dana", href: "/prosedur/penarikan" },
     ],
   },
   {
