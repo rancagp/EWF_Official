@@ -8,36 +8,36 @@
     },
     "vision": {
       "title": "Vision",
-      "description": "To develop and advance Commodity Futures Trading and provide a positive impact on the Indonesian economy."
+      "description": "To become a leading and trusted futures brokerage firm with modern and transparent operational standards, providing strategic value to the development of the industry and the national economy."
     },
     "mission": {
       "title": "Mission",
       "items": [
-        "Promote promotional and educational programs about the futures trading industry",
-        "Provide hedging instruments with KYC principles",
-        "Introduce the futures trading industry through higher education and seminars",
-        "Enhance regulatory compliance aspects",
-        "Prepare qualified human resources through training programs"
+        "Provide professional and secure futures trading services with a high standard of integrity.",
+        "Develop the quality of human resources to deliver competent and competitive services.",
+        "Implement transparent and accountable corporate governance.",
+        "Expand access to education and literacy on futures trading for the public.",
+        "Optimize technology to support efficient operations and a better overall client experience."
       ]
     },
     "values": {
       "title": "Company Values",
       "items": {
         "integrity": {
-          "title": "Integrity",
-          "description": "Uphold honesty and professionalism in every service"
+          "title": "Professional Integrity",
+          "description": "Uphold high ethical standards and maintain consistency in actions and decisions across all company activities."
         },
         "customerSatisfaction": {
-          "title": "Customer Satisfaction",
-          "description": "Provide the best service for customer satisfaction"
+          "title": "Customer-Centric Focus",
+          "description": "Prioritize clients’ needs and investment objectives through responsive, accurate, and transparent services."
         },
         "compliance": {
-          "title": "Compliance",
-          "description": "Always comply with applicable laws and regulations"
+          "title": "Disciplined Compliance",
+          "description": "Conduct all business processes within the regulatory framework with strong and sustainable internal controls."
         },
         "innovation": {
-          "title": "Innovation",
-          "description": "Continue to innovate in product and service development"
+          "title": "Continuous Innovation",
+          "description": "Drive the development of technology, products, and workflows to deliver an increasingly efficient and competitive trading experience."
         }
       }
     },

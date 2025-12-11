@@ -8,36 +8,36 @@
     },
     "vision": {
       "title": "Visi",
-      "description": "Mengembangkan dan memajukan Perdagangan Berjangka Komoditi serta memberikan dampak positif untuk perekonomian di Indonesia."
+      "description": "Menjadi perusahaan pialang berjangka yang unggul dan terpercaya, dengan standar operasional yang modern, transparan, serta memberikan nilai strategis bagi perkembangan industri dan perekonomian nasional."
     },
     "mission": {
       "title": "Misi",
       "items": [
-        "Menggiatkan program promosi dan edukasi tentang industri PBK",
-        "Menyediakan sarana lindung nilai (hedging) dengan prinsip KYC",
-        "Memperkenalkan industri PBK melalui pendidikan tinggi dan seminar",
-        "Meningkatkan aspek kepatuhan peraturan yang berlaku",
-        "Menyiapkan SDM berkualitas melalui program pelatihan"
+        "Menyediakan layanan perdagangan berjangka yang profesional, aman, dan berintegritas tinggi.",
+        "Mengembangkan kualitas sumber daya manusia untuk menghadirkan layanan yang kompeten dan berdaya saing.",
+        "Mengimplementasikan tata kelola perusahaan yang transparan dan akuntabel.",
+        "Memperluas akses edukasi serta literasi perdagangan berjangka kepada masyarakat.",
+        "Mengoptimalkan teknologi untuk mendukung operasional dan pengalaman nasabah secara efisien."
       ]
     },
     "values": {
       "title": "Nilai-Nilai Perusahaan",
       "items": {
         "integrity": {
-          "title": "Integritas",
-          "description": "Menjunjung tinggi kejujuran dan profesionalisme dalam setiap layanan"
+          "title": "Integritas Profesional",
+          "description": "Menegakkan standar etika yang tinggi serta menjaga konsistensi tindakan dan keputusan dalam setiap aktivitas perusahaan."
         },
         "customerSatisfaction": {
-          "title": "Kepuasan Nasabah",
-          "description": "Memberikan pelayanan terbaik untuk kepuasan nasabah"
+          "title": "Fokus pada Nasabah",
+          "description": "Mengutamakan kebutuhan dan tujuan investasi nasabah melalui layanan yang responsif, akurat, dan transparan."
         },
         "compliance": {
-          "title": "Kepatuhan",
-          "description": "Selalu patuh terhadap peraturan dan perundang-undangan yang berlaku"
+          "title": "Disiplin Kepatuhan",
+          "description": "Menjalankan seluruh proses bisnis sesuai kerangka regulasi dengan kontrol internal yang kuat dan berkelanjutan."
         },
         "innovation": {
-          "title": "Inovasi",
-          "description": "Terus berinovasi dalam pengembangan produk dan layanan"
+          "title": "Inovasi Berkelanjutan",
+          "description": "Mendorong pengembangan teknologi, produk, dan proses kerja untuk menghadirkan pengalaman transaksi yang semakin efisien dan kompetitif."
         }
       }
     },
