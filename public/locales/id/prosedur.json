@@ -133,27 +133,52 @@
   },
 
   
-  "ilustrasiTransaksi": {
+   "ilustrasiTransaksi": {
     "title": "Ilustrasi Transaksi",
-    "description": "Untuk Anda yang ingin melakukan investasi dengan produk-produk dari PT Equityworld Futures, Anda dapat melihat ilustrasi transaksi dibawah ini, guna untuk mempertimbangkan lebih dalam lagi apakah Anda yakin dalam hal ini:",
+    "description": "Untuk Anda yang ingin melakukan investasi dengan produk-produk dari PT Equityworld Futures, Anda dapat melihat ilustrasi transaksi di bawah ini, guna mempertimbangkan lebih dalam lagi apakah Anda yakin dalam hal ini:",
     "rumusPerhitungan": {
       "title": "Rumus Perhitungan Transaksi",
-      "formula": "[(Harga Jual – Harga Beli) x Nilai Kontrak x n Lot] – [(Biaya Fasilitas + PPN) x n Lot]",
+      "formula": "[ ( Selling Price – Buying Price ) x Contract Size x n Lot ] – [ ( Facility Fee + VAT ) x n Lot ]",
       "keterangan": "Keterangan:",
       "details": [
-        {"key": "contractSize", "label": "Nilai Kontrak", "value": "US $5 per poin untuk kontrak gulir berkala indeks saham dan 100 troy ons untuk kontrak gulir harian emas Loco London."},
-        {"key": "lot", "label": "n Lot", "value": "n adalah jumlah lot yang ditransaksikan."},
-        {"key": "facilityFee", "label": "Biaya Fasilitas (komisi)", "value": "US $15 per lot per sisi (beli atau jual). Total biaya komisi adalah US $30 untuk penyelesaian 1 lot."},
-        {"key": "vat", "label": "PPN (Pajak Pertambahan Nilai)", "value": "11% dari biaya komisi yaitu US $1,65 /lot/sisi. Total biaya PPN adalah US $3,3 untuk penyelesaian 1 lot."},
-        {"key": "overnight", "label": "Biaya Menginap/Roll Over", "value": "Jika penyelesaian transaksi dilakukan lebih dari satu hari (menginap), setiap lot transaksi akan dikenakan biaya menginap/roll over."}
+        {
+          "key": "contractSize",
+          "label": "Contract Size (nilai kontrak)",
+          "value": "sebesar US$ 5 per poin untuk kontrak gulir berkala indeks saham, 100 troy ounce untuk kontrak gulir harian emas Loco London, 5.000 troy ounce untuk kontrak gulir harian perak Loco London, 1.000 barrel untuk kontrak gulir berkala Brent Crude Oil (BCO) dan 100.000 untuk kontrak gulir harian spot mata uang (Forex)."
+        },
+        {
+          "key": "lot",
+          "label": "n Lot",
+          "value": "n adalah banyaknya lot yang ditransaksikan."
+        },
+        {
+          "key": "facility",
+          "label": "Facility",
+          "value": "Facility Fee: sebesar US$ 15 per lot per sisi (beli atau jual). Rollover Facility: sebesar US$ 3/lot/malam/sisi untuk HKK; sebesar US$ 2/lot/malam/sisi untuk JPK; sebesar US$ 5/lot/malam/sisi untuk Emas, Perak, dan BCO."
+        },
+        {
+          "key": "commissionTotal",
+          "label": "Total biaya komisi",
+          "value": "Total biaya komisi sebesar US$ 30 untuk 1 lot settlement."
+        },
+        {
+          "key": "vat",
+          "label": "VAT / PPN Facility Fee",
+          "value": "VAT (Value Added Tax / Pajak Pertambahan Nilai) Facility Fee: sebesar 11% dari biaya komisi yaitu US$ 1.65/lot/side. Total biaya VAT sebesar US$ 3.3 untuk 1 lot settlement."
+        },
+        {
+          "key": "overnight",
+          "label": "Biaya Menginap/Roll Over",
+          "value": "Apabila penyelesaian transaksi dilakukan lebih dari satu hari (overnight) maka setiap lot transaksi akan dikenakan biaya inap/roll over ditambah VAT/PPN 11% dari biaya inap. (Dapat dilihat pada tabel perdagangan)"
+        }
       ],
       "rollOverFee": {
-        "title": "Biaya roll over / penyimpanan (biaya menginap):",
+        "title": "Rollover Facility (biaya menginap):",
         "items": [
-          "HKK5U dan HKK50 sebesar US $3/malam",
-          "JPK5U dan JPK50 sebesar US $2/malam",
-          "XULF dan XUL10 sebesar US $5/malam",
-          "XAGF dan XAG10 sebesar US $5/malam"
+          "HKK: US$ 3 /lot/malam/sisi (beli atau jual)",
+          "JPK: US$ 2 /lot/malam/sisi (beli atau jual)",
+          "Emas, Perak, dan BCO: US$ 5 /lot/malam/sisi (beli atau jual)",
+          "PPN/VAT rollover: 11% dari biaya menginap"
         ]
       }
     },
@@ -163,44 +188,33 @@
         "title": "Contoh Transaksi Harian",
         "examples": [
           {
-            "title": "Contoh 1",
-            "description": "Seorang nasabah mengambil posisi beli HKK5U pada level 24.600 poin sebanyak 2 lot. Kemudian nasabah menutup/melikuidasi posisi beli 2 lot tersebut ketika indeks berada pada level 24.700 poin.",
+            "title": "Contoh 1 (HKK5U_BBJ)",
+            "description": "Seorang nasabah mengambil transaksi HKK5U_BBJ pada angka 25,000 sebanyak 2 lot (Open Buy 2 lot), yang dia prediksi bahwa harga akan bergerak lebih tinggi. Di sesi perdagangan siang hari harga bergerak naik ke level 25,400 dan ia melikuidasi semua posisinya pada level 25,300 (Closed Sell 2 lot).",
             "calculation": [
-              "L/R = [ ( Harga Jual – Harga Beli ) x Nilai Kontrak x n Lot ] – [ ( Biaya US $ 30 + PPN ) x n Lot ]",
-              "L/R = [ ( 24.700 – 24.600 ) x US $ 5 x 2 lot ] – [ ( US $ 30 + US $ 3,3 ) x 2 lot ]",
-              "L/R = ( 100 poin x US $ 5 x 2 lot ) – ( US $ 33,3 x 2 )",
-              "L/R = US $ 1000 – US $ 66,6",
-              "L/R = US $ 933,4 (laba bersih)"
+              "P/L = [(25,300-25,000) pts x US$5 x 2 lots] - [(US$30 + US$3.3) x 2 lots]",
+              "P/L = (300 pts x US$10) - US$66.6",
+              "P/L = US$2,933.4",
+              "Keuntungan bersih nasabah adalah US$2,933.4",
+              "Catatan: P = Profit, L = Loss"
             ]
           },
           {
-            "title": "Contoh 2",
-            "description": "Seorang investor memprediksi Indeks Hang Seng akan menguat, sehingga membuka posisi beli HKK5U pada level 24.600 poin sebanyak 1 lot. Namun pergerakan indeks tidak sesuai prediksi, sehingga investor menutup/melikuidasi posisi beli 1 lot tersebut dalam keadaan rugi ketika indeks berada pada level 24.550 poin.",
+            "title": "Contoh 4 (XAGF)",
+            "description": "Seorang nasabah memprediksi harga perak Loco London akan naik, maka nasabah mengambil posisi beli di kontrak XAGF pada harga US$ 61,175 / troy ounce sebanyak 1 lot. Nasabah melikuidasi posisinya pada harga US$ 61,200.",
             "calculation": [
-              "L/R = [ ( Harga Jual – Harga Beli ) x Nilai Kontrak x n Lot ] – [ ( Biaya US $ 30 + PPN ) x n Lot ]",
-              "L/R = [ ( 24.550 – 24.600 ) x US $ 5 x 1 lot ] – [ ( US $ 30 + US $ 3,3 ) x 1 lot ]",
-              "L/R = ( – 50 poin x US $ 5 x 1 lot ) – ( US $ 33,3 x 1 lot )",
-              "L/R = – US $ 250 – US $ 33,3",
-              "L/R = – US $ 283,3 (rugi bersih)"
-            ]
-          },
-          {
-            "title": "Contoh 3",
-            "description": "Seorang nasabah memprediksi harga perak Loco London akan naik, sehingga mengambil posisi beli kontrak XAGF pada harga $24,175/troy ons untuk 1 lot. Nasabah melikuidasi posisinya pada harga $24,200.",
-            "calculation": [
-              "L/R = [ ( Harga Jual – Harga Beli ) x Nilai Kontrak x n Lot ] - [ ( Biaya Fasilitas + PPN ) x n Lot ]",
-              "L/R = [ ( US $ 24.200 / troy ons – US $ 24.175 / troy ons ) x 100 troy ons x 1 lot ] – [ ( US $ 30 + US $ 3,3 ) x 1 lot ]",
-              "L/R = ( 0,025 / troy ons x 100 troy ons x 1 lot ) – ( US $ 33,3 )",
-              "L/R = US$ 91,70",
-              "Nasabah memperoleh keuntungan sebesar US$ 91,70"
+              "P/L = [ ( Selling Price – Buying Price ) x Contract Size x n Lot ] - [ ( Facility Fee + VAT ) x n Lot ]",
+              "P/L = [ ( US$61,200 / troy ounce – US$61,175 / troy ounce ) x 5,000 troy ounce x 1 lot ] – [ ( US$30 + US$3.3 ) x 1 lot ]",
+              "P/L = ( 0.025 / troy ounce x 5,000 / troy ounce x 1 lot ) – ( US$33.3 )",
+              "P/L = US$ 91.70",
+              "Nasabah mendapatkan keuntungan sebesar US$ 91.70"
             ],
             "alternative": {
-              "description": "Jika dilikuidasi pada harga $24,155:",
+              "description": "Apabila dilikuidasi pada harga US$ 61,155, maka perhitungannya:",
               "calculation": [
-                "L/R = [ ( US $ 24.155 / troy ons – US $ 24.175 / troy ons ) x 100 troy ons x 1 lot ] – [ ( US $ 30 + US $ 3,3 ) x 1 lot ]",
-                "L/R = (- 0,020 / troy ons x 100 troy ons x 1 lot ) – ( US $ 33,3 )",
-                "L/R = - US$ 133,30",
-                "Nasabah mengalami kerugian sebesar - US$ 133,30"
+                "P/L = [ ( US$61,155 / troy ounce – US$61,175 / troy ounce ) x 5,000 troy ounce x 1 lot ] – [ ( US$30 + US$3.3 ) x 1 lot ]",
+                "P/L = ( -0.020 / troy ounce x 5,000 / troy ounce x 1 lot ) – ( US$33.3 )",
+                "P/L = - US$ 133.30",
+                "Nasabah mengalami kerugian sebesar - US$ 133.30"
               ]
             }
           }
@@ -210,97 +224,122 @@
         "title": "Contoh Transaksi Overnight",
         "examples": [
           {
-            "title": "Contoh 4",
-            "description": "Seorang investor memprediksi Indeks Nikkei 225 akan melemah (bearish), maka pada tanggal 10 Juni investor membuka posisi jual pada level 14.850 poin sebanyak 2 lot. Dua hari kemudian (12 Juni), investor menutup/melikuidasi posisi jual 2 lot tersebut ketika indeks berada pada level 14.650 poin.",
+            "title": "Contoh 2 (JPK5U_BBJ)",
+            "description": "Seorang nasabah menganalisa bahwa produk JPK5U_BBJ akan mengalami penurunan harga dan pada saat itu investor tersebut segera mengambil posisi jual pada level 49,850 sebanyak 2 lot. Dua hari kemudian nasabah itu menutup posisinya ketika harga berada pada level 49,650.",
             "calculation": [
-              "L/R = [ ( Harga Jual – Harga Beli ) x Nilai Kontrak x n Lot ] - [ ( Biaya US $ 30 + PPN ) x n Lot ]",
-              "L/R = [ ( 14.850 – 14.650 ) x US $ 5 x 2 lot ] – [ ( US $ 30 + US $ 3,3 ) x 2 lot ]",
-              "L/R = ( 200 poin x US $ 5 x 2 lot ) – ( US $ 33,3 x 2 lot )",
-              "L/R = US $ 2000 – US $ 66,6",
-              "L/R = US $ 1933,4 (laba kotor)",
-              "Biaya roll over (US $ 2 x 2 lot x 2 malam) = US $ 8",
-              "Laba bersih = US $ 1925,4"
+              "P/L = [(Selling Price - Buying Price) x Contract Size x n Lot] - [(Fee US$30 + VAT) x n Lot]",
+              "P/L = [(49,850-49,650) x US$5 x 2 lots] - [(US$30 + US$3.3) x 2 lots]",
+              "P/L = (200 points x US$5 x 2 lots) - US$66.6",
+              "P/L = US$1,933.4 (gross profit)",
+              "Karena transaksi dilaksanakan lebih dari satu malam (overnight), maka dikenakan biaya menginap (roll over) + PPN sebesar: [(US$2 + US$0.22) x 2 lot x 2 malam] = US$8.88",
+              "Sehingga keuntungan bersih nasabah adalah: P/L = US$1,933.4 - US$8.88 = US$1,924.52"
             ]
           },
           {
-            "title": "Contoh 5",
-            "description": "Seorang investor memprediksi tren indeks emas Loco London akan menguat (bullish), maka pada hari ini investor membuka posisi beli kontrak emas Loco London harian (XUL10) pada US $ 1170,25 / troy ons sebanyak 2 lot. Keesokan harinya investor menutup/melikuidasi posisi beli 2 lot kontrak XUL10 tersebut ketika indeks berada pada level US $ 1185,25 / troy ons.",
+            "title": "Contoh 3 (XULF)",
+            "description": "Seorang nasabah memprediksi harga emas Loco London ada dalam trend positif dan dia merencanakan untuk mengambil posisi beli. Ketika dalam pengambilan posisi dia mendapatkan harga pada level US$ 4,275.30 / troy ounce sebanyak 2 lot. Meskipun demikian harga telah jatuh ke level US$ 4,260.65 / troy ounce dan dia harus menglikuidasi pada posisi US$ 4,265.30 / troy ounce sebanyak 1 lot. Pada keesokan harinya dia menglikuidasi sisanya saat harga berada pada level US$ 4,290.20 / troy ounce.",
             "calculation": [
-              "L/R = [ ( Harga Jual – Harga Beli ) x Nilai Kontrak x n Lot ] - [ ( Biaya US $ 10 + PPN ) x n Lot ]",
-              "L/R = [ ( US $ 1185,25 / troy ons – US $ 1170,25 / troy ons ) x 100 troy ons x 2 lot ] – [ ( US $ 30 + US $ 3,3 ) x 2 lot ]",
-              "L/R = ( US $ 15,00 x 100 x 2 lot ) – ( US $ 33,3 x 2 lot )",
-              "L/R = US $ 3000 – US $ 66,6",
-              "L/R = US $ 2933,4 (laba kotor)",
-              "Biaya roll over (US $ 5 x 2 lot x 1 malam) = US $ 10",
-              "Laba bersih = US $ 2923,4 atau Rp 29.234.000 (kurs US $ 1 = Rp 10.000,00)"
+              "Hari Pertama",
+              "P/L  = [US$(4,265.30 - 4,275.30) / troy ounce x 100 troy ounce x 1 lot] - [US$(30 + 3.3) x 1 lot]",
+              "P/L  = - US$1,000 - US$33.3 = - US$1,033.3",
+              "Hari Kedua",
+              "P/L  = [US$(4,290.20 - 4,275.30) / troy ounce x 100 x 1 lot] - [US$(30 + 3.3) x 1 lot]",
+              "P/L  = US$1,490 - US$33.3 = US$1,456.7",
+              "Dikarnakan transaksi dilakukan lebih dari 1 hari maka dikenakan biaya roll over + PPN sebesar: [(US$5 + US$0.55) x 1 lot x 1 night] = US$5.55",
+              "Net profit investor itu sebesar -US$1,033.3 + US$1,456.7 - US$5.55 = US$417.85"
             ]
           }
         ]
       }
     },
     "kodeKontrak": {
-      "title": "Kode & Jenis Kontrak",
+      "title": "TRANSAKSI FOREX",
       "table": {
         "headers": ["Kode Kontrak", "Dasar", "Kategori", "Jenis Kontrak"],
         "rows": [
-          ["GU1010_BBJ", "GBP/USD", "LANGSUNG", "Kontrak Gulir Harian Harga Spot Pound Sterling Inggris (GBP) terhadap Dolar AS (USD)"],
-          ["EU1010_BBJ", "EUR/USD", "LANGSUNG", "Kontrak Gulir Harian Harga Spot Euro (EUR) terhadap Dolar AS (USD)"],
-          ["AU1010_BBJ", "AUD/USD", "LANGSUNG", "Kontrak Gulir Harian Harga Spot Dolar Australia (AUD) terhadap Dolar AS (USD)"],
-          ["UC1010_BBJ", "USD/CHF", "TIDAK LANGSUNG", "Kontrak Gulir Harian Harga Spot Dolar AS (USD) terhadap Franc Swiss (CHF)"],
-          ["UJ1010_BBJ", "USD/JPY", "TIDAK LANGSUNG", "Kontrak Gulir Harian Harga Spot Dolar AS (USD) terhadap Yen Jepang (JPY)"]
+          [
+            "GU1010_BBJ & GU10F_BBJ",
+            "GBP/USD",
+            "DIRECT",
+            "Kontrak Gulir Harian Spot Great Britain Pound Sterling (GBP) Terhadap US Dollar (USD)"
+          ],
+          [
+            "EU1010_BBJ & EU10F_BBJ",
+            "EUR/USD",
+            "DIRECT",
+            "Kontrak Gulir Harian Spot Euro (EUR) Terhadap US Dolar (USD)"
+          ],
+          [
+            "AU1010_BBJ & AU10F_BBJ",
+            "AUD/USD",
+            "DIRECT",
+            "Kontrak Gulir Harian Spot Australian Dollar (AUD) Terhadap US Dolar (USD)"
+          ],
+          [
+            "UC1010_BBJ & UC10F_BBJ",
+            "USD/CHF",
+            "INDIRECT",
+            "Kontrak Gulir Harian Spot US Dollar (USD) Terhadap Swiss Franc (CHF)"
+          ],
+          [
+            "UJ1010_BBJ & UJ10F_BBJ",
+            "USD/JPY",
+            "INDIRECT",
+            "Kontrak Gulir Harian Spot US Dollar (USD) Terhadap Japanese Yen (JPY)"
+          ]
         ]
       },
       "ilustrasiPerhitungan": {
-        "title": "Ilustrasi Perhitungan",
+        "title": "Rumus Perhitungan Transaksi Forex",
         "directRates": {
-          "title": "Untuk NILAI TUKAR LANGSUNG:",
-          "formula": "L/R = (Harga Jual - Harga Beli) x Nilai Kontrak x Jumlah Lot"
+          "title": "Katagori DIRECT RATES",
+          "formula": "P/L = [(Selling Price-Buying Price) x Contract Size x n Lots] – [(Facility Fee + VAT) x n Lot]"
         },
         "indirectRates": {
-          "title": "Untuk NILAI TUKAR TIDAK LANGSUNG:",
-          "formula": "L/R = (Harga Jual - Harga Beli) / Harga Jual x Nilai Kontrak x Jumlah Lot"
+          "title": "Katagori INDIRECT RATES",
+          "formula": "P/L = (Selling Price-Purchase Price) / Liquidation Price x Contract Size x Number of Lots"
         },
         "example1": {
-          "title": "Transaksi EU1010_BBJ (Harian)",
-          "description": "Seorang nasabah memprediksi harga spot Euro akan naik, kemudian mengambil posisi beli EU1010_BBJ pada 1,3530 untuk 2 lot. Tak lama kemudian, nasabah melikuidasi posisi terbukanya pada 1,3540 untuk 2 lot (clear position).",
+          "title": "Contoh 1 : Transaksi EU1010_BBJ (Daytrade)",
+          "description": "Nasabah memprediksi harga spot dari EUR/USD akan naik kemudian dia mengambil posisi beli (buy) di harga 1.1530 sebanyak 2 lot. Tidak lama kemudian dia menglikuidasi di harga 1.1540 sebanyak 2 lot (clear position).",
           "profit": {
             "title": "Perhitungan Keuntungan:",
             "calculation": [
-              "L/R = (1,3540-1,3530) x 100.000 x 2 - [ (US$ 30 + US$ 3,3) x 2 Lot ]",
-              "L/R = 0,0010 x 100.000 x 2 - [(US$ 33,3) x 2 lot )",
-              "L/R = US$ 133,4",
-              "Nasabah memperoleh keuntungan sebesar US$ 133,4"
+              "P/L = [(1.1540 - 1.1530) x 100.000 x 2 lot] - [(US$30 + US$3.3) x 2 lot]",
+              "P/L = (0,0010 x 100.000 x 2) - US$66.6",
+              "P/L = US$200 - US$66.6 = US$133.4",
+              "Nasabah mendapatkan keuntungan sebesar Rp 1.334.000,00 (fixed rate US$1 = Rp 10.000,00)"
             ]
           },
           "loss": {
-            "title": "Jika dilikuidasi pada harga 1,3525:",
+            "title": "Namun apabila posisi tersebut dilikuidasi pada harga 1.1525 maka perhitungannya:",
             "calculation": [
-              "L/R = (1,3525-1,3530) x 100.000 x 2 - [ (US$ 30 + US$ 3,3) x 2 Lot ]",
-              "L/R = -0,0005 x 100.000 x 2 - [(US$ 33,3) x 2 lot )",
-              "L/R = -US$ 166,6",
-              "Nasabah mengalami kerugian sebesar US$ 166,6"
+              "P/L = [(1.1525 - 1.1530) x 100.000 x 2 lot] - [(US$30 + US$3.3) x 2 lot]",
+              "P/L = (-0,0005 x 100.000 x 2 lot) - US$66.6",
+              "P/L = - US$166.6",
+              "Maka nasabah tersebut mendapatkan kerugian sebesar - Rp 1.666.000,00 (fixed rate US$1 = Rp 10.000,00)"
             ]
           }
         },
         "example2": {
-          "title": "Transaksi UJ10101_BBJ (Harian)",
-          "description": "Seorang nasabah memprediksi harga spot USD/JPY akan turun, kemudian mengambil posisi jual UJ1010_BBJ pada 102,20 untuk 1 lot. Beberapa jam kemudian, nasabah melikuidasi pada 102,12.",
+          "title": "Contoh 2 : Transaksi UJ1010_BBJ (Daytrade)",
+          "description": "Seorang nasabah memprediksi harga spot dari USD/JPY akan jatuh kemudian dia memutuskan untuk mengambil posisi jual pada produk UJ1010_BBJ di level 152.20 sebanyak 1 lot. Beberapa jam kemudian dia melikuidasi transaksinya di harga 152.12.",
           "profit": {
             "title": "Perhitungan Keuntungan:",
             "calculation": [
-              "L/R = (102,20-102,12)/102,12 x 100.000 x 1 - [ (US$ 30 + US$ 3,3) x 1 Lot ]",
-              "L/R = 0,0007834 x 100.000 x 1 - [(US$ 33,3) x 1 lot )",
-              "L/R = US$ 45,04",
-              "Nasabah memperoleh keuntungan sebesar US$ 45,04"
+              "P/L = [(152.20-152.12)/152.12 x 100.000 x 1 lot] - [(US$30 + US$3.3) x 1 lot]",
+              "P/L = (0.0005259 x 100.000 x 1) - US$33.3",
+              "P/L = US$19.29",
+              "Keuntungan yang diperoleh oleh nasabah adalah Rp. 192.900,00 (fixed rate US$1 = Rp 10.000,00)"
             ]
           },
           "loss": {
-            "title": "Jika USD/JPY naik ke 102,27 dan dilikuidasi pada harga yang sama:",
+            "title": "Akan tetapi jika harga spot dari USD/JPY berada di posisi 152.27 dan dilikuidasi pada posisi harga yang sama maka:",
             "calculation": [
-              "L/R = (102,20-102,27)/102,27 x 100.000 x 1 - [ (US$ 30 + US$ 3,3) x 1 Lot ]",
-              "L/R = -0,0006844 x 100.000 x 1 - [(US$ 33,3) x 1 lot )",
-              "L/R = -US$ 101,74",
-              "Nasabah mengalami kerugian sebesar US$ 101,74"
+              "P/L = [(152.20-152.27)/152.27 x 100.000 x 1 lot] - [(US$30 + US$3.3) x 1 lot]",
+              "P/L = (-0.0004597 x 100.000 x 1 lot) - US$33.3",
+              "P/L = - US$79.27",
+              "Maka nasabah tersebut mendapatkan kerugian sebesar - Rp 792.700 (fixed rate US$1 = Rp 10.000,00)"
             ]
           }
         }
