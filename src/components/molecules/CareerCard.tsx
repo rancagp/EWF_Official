@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
+
+const ApplyModal = dynamic(
+  () => import('./ApplyModal').then((mod) => mod.default),
+  { ssr: false }
+);
 
 interface CareerCardProps {
   id: number;
@@ -19,6 +25,7 @@ const CareerCard: React.FC<CareerCardProps> = ({
   createdAt = new Date().toISOString(),
   slug = '',
 }) => {
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const { t } = useTranslation('common');
   
   // Format tanggal sederhana
@@ -93,17 +100,27 @@ const CareerCard: React.FC<CareerCardProps> = ({
         <div className="mt-6 flex flex-col space-y-3">
           <Link 
             href={`/karier/${slug || id}`}
-            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200"
+            className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#F2AC59] hover:bg-[#e09b4a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F2AC59] transition-colors duration-200"
           >
             {t('karier.view_details', 'Lihat Detail')}
           </Link>
-          <Link 
-            href={`/karier/${slug || id}/lamar`}
-            className="inline-flex items-center justify-center px-4 py-2 border border-orange-500 text-sm font-medium rounded-md text-orange-600 bg-white hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors duration-200"
+          <button
+            type="button"
+            onClick={() => setIsApplyModalOpen(true)}
+            className="inline-flex items-center justify-center px-4 py-2 border border-[#F2AC59] text-sm font-medium rounded-md text-[#4C4C4C] bg-white hover:bg-[#F2F2F2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F2AC59] transition-colors duration-200"
           >
             {t('karier.apply_now', 'Lamar Sekarang')}
-          </Link>
+          </button>
         </div>
+        
+        {isApplyModalOpen && (
+          <ApplyModal
+            isOpen={isApplyModalOpen}
+            onClose={() => setIsApplyModalOpen(false)}
+            position={position}
+            location={location}
+          />
+        )}
       </div>
     </div>
   );

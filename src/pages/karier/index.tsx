@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import PageTemplate from '@/components/templates/PageTemplate';
 import Container from '@/components/templates/PageContainer/Container';
-import CareerCard from '@/components/CareerCard';
+import CareerCard from '@/components/molecules/CareerCard';
 
 interface Career {
   id: number;
@@ -47,6 +47,15 @@ const dummyCareers = [
   {
     id: 3,
     posisi: 'UI/UX Designer',
+    nama_kota: 'Surabaya',
+    slug: 'ui-ux-designer',
+    responsibilities: 'Mendesain antarmuka pengguna yang menarik dan mudah digunakan',
+    requirements: 'Figma,Adobe XD,UI Design,User Research',
+    created_at: '2023-12-14T14:15:00.000Z'
+  },
+  {
+    id: 4,
+    posisi: 'IT Support',
     nama_kota: 'Surabaya',
     slug: 'ui-ux-designer',
     responsibilities: 'Mendesain antarmuka pengguna yang menarik dan mudah digunakan',
