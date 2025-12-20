@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import PageTemplate from '@/components/templates/PageTemplate';
 import Container from '@/components/templates/PageContainer/Container';
 import CareerCard from '@/components/molecules/CareerCard';
@@ -15,7 +16,6 @@ interface Career {
   responsibilities: string;
   requirements: string;
   email: string;
-  status: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -24,66 +24,15 @@ interface CareersPageProps {
   initialCareers: Career[];
 }
 
-// Data dummy untuk pengujian
-const dummyCareers = [
-  {
-    id: 1,
-    posisi: 'Frontend Developer',
-    nama_kota: 'Jakarta',
-    slug: 'frontend-developer',
-    responsibilities: 'Mengembangkan antarmuka pengguna menggunakan React.js dan Next.js',
-    requirements: 'React,Next.js,JavaScript,TypeScript',
-    created_at: '2023-12-16T10:00:00.000Z'
-  },
-  {
-    id: 2,
-    posisi: 'Backend Developer',
-    nama_kota: 'Bandung',
-    slug: 'backend-developer',
-    responsibilities: 'Mengembangkan dan memelihara API menggunakan Laravel',
-    requirements: 'PHP,Laravel,MySQL,API Development',
-    created_at: '2023-12-15T09:30:00.000Z'
-  },
-  {
-    id: 3,
-    posisi: 'UI/UX Designer',
-    nama_kota: 'Surabaya',
-    slug: 'ui-ux-designer',
-    responsibilities: 'Mendesain antarmuka pengguna yang menarik dan mudah digunakan',
-    requirements: 'Figma,Adobe XD,UI Design,User Research',
-    created_at: '2023-12-14T14:15:00.000Z'
-  },
-  {
-    id: 4,
-    posisi: 'IT Support',
-    nama_kota: 'Surabaya',
-    slug: 'ui-ux-designer',
-    responsibilities: 'Mendesain antarmuka pengguna yang menarik dan mudah digunakan',
-    requirements: 'Figma,Adobe XD,UI Design,User Research',
-    created_at: '2023-12-14T14:15:00.000Z'
-  }
-];
-
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  // Gunakan data dummy untuk sementara
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'id', ['common', 'footer'])),
-      initialCareers: dummyCareers, // Gunakan data dummy
-    },
-    revalidate: 60,
-  };
-
-  // Kode asli untuk mengambil dari API (dinonaktifkan sementara)
-  /*
   try {
-    const res = await fetch('http://localhost:8000/api/karier');
-    const careers = await res.json();
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier`);
+    const careers = res.data.data;
 
     return {
       props: {
         ...(await serverSideTranslations(locale || 'id', ['common', 'footer'])),
-        initialCareers: careers.data || [],
+        initialCareers: careers,
       },
       revalidate: 60,
     };
@@ -96,32 +45,62 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
       },
     };
   }
-  */
 };
 
-export default function Karier({ initialCareers }: CareersPageProps) {
+const Karier = ({ initialCareers = [] }: { initialCareers?: Career[] }) => {
+  const [careers, setCareers] = useState<Career[]>(initialCareers || []);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCareers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier`);
+        if (response.data.success) {
+          setCareers(response.data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching careers:', err);
+        setError('Gagal memuat data lowongan. Silakan coba lagi nanti.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCareers();
+  }, []);
+
   const { t } = useTranslation('common');
   const router = useRouter();
-  const [careers, setCareers] = useState<Career[]>(initialCareers);
-  const [loading, setLoading] = useState(false);
 
-  if (loading && careers.length === 0) {
+  if (isLoading) {
     return (
-      <PageTemplate title={t('karier.title', 'Lowongan Pekerjaan')}>
+      <PageTemplate title={t('loading', 'Memuat...')}>
         <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
-          <Container title={t('karier.title', 'Lowongan Pekerjaan')}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(3)].map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                </div>
-              ))}
+          <Container title={t('loading', 'Memuat...')}>
+            <div className="min-h-[50vh] flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
             </div>
           </Container>
+        </div>
+      </PageTemplate>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageTemplate title={t('error', 'Terjadi Kesalahan')}>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            >
+              Coba Lagi
+            </button>
+          </div>
         </div>
       </PageTemplate>
     );
@@ -132,7 +111,7 @@ export default function Karier({ initialCareers }: CareersPageProps) {
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
         <Container title={t('karier.available_positions', 'Lowongan Tersedia')}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {careers.map((career) => (
+            {Array.isArray(careers) && careers.map((career) => (
               <div key={career.id} className="hover:shadow-md transition-shadow duration-300">
                 <CareerCard
                   id={career.id}
@@ -145,7 +124,7 @@ export default function Karier({ initialCareers }: CareersPageProps) {
             ))}
           </div>
 
-          {careers.length === 0 && (
+          {(!careers || careers.length === 0) && (
             <div className="text-center py-12">
               <div className="text-gray-400 mb-4">
                 <svg
@@ -176,3 +155,5 @@ export default function Karier({ initialCareers }: CareersPageProps) {
     </PageTemplate>
   );
 }
+
+export default Karier;

@@ -2,11 +2,24 @@ import { GetStaticProps, GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import dynamic from 'next/dynamic';
 import PageTemplate from '@/components/templates/PageTemplate';
 import Container from '@/components/templates/PageContainer/Container';
 import Head from 'next/head';
+
+interface CareerDetail {
+  id: number;
+  nama_kota: string;
+  posisi: string;
+  slug: string;
+  responsibilities: string;
+  requirements: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
 
 // Lazy load the modal to improve initial page load
 const ApplyModal = dynamic(
@@ -14,95 +27,139 @@ const ApplyModal = dynamic(
   { ssr: false }
 );
 
-interface CareerDetail {
-  id: number;
-  posisi: string;
-  nama_kota: string;
-  slug: string;
-  responsibilities: string;
-  requirements: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface CareerDetailProps {
   career: CareerDetail | null;
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // Di production, ambil daftar slug dari API
-  const paths = [
-    { params: { slug: 'frontend-developer' } },
-    { params: { slug: 'backend-developer' } },
-    { params: { slug: 'ui-ux-designer' } },
-  ];
+  try {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier`);
+    const careers = res.data.data;
+    
+    const paths = careers.map((career: CareerDetail) => ({
+      params: { slug: career.slug },
+    }));
 
-  return {
-    paths,
-    fallback: 'blocking', // Tampilkan 404 jika halaman tidak ditemukan
-  };
+    return {
+      paths,
+      fallback: 'blocking',
+    };
+  } catch (error) {
+    console.error('Error fetching career paths:', error);
+    return {
+      paths: [],
+      fallback: 'blocking',
+    };
+  }
 };
 
 export const getStaticProps: GetStaticProps = async ({ params, locale }) => {
   const slug = params?.slug;
   
-  // Data dummy untuk pengujian
-  const dummyCareers = [
-    {
-      id: 1,
-      posisi: 'Frontend Developer',
-      nama_kota: 'Jakarta',
-      slug: 'frontend-developer',
-      responsibilities: 'Mengembangkan antarmuka pengguna menggunakan React.js dan Next.js',
-      requirements: 'React,Next.js,JavaScript,TypeScript',
-      created_at: '2023-12-16T10:00:00.000Z',
-      updated_at: '2023-12-16T10:00:00.000Z',
-    },
-    {
-      id: 2,
-      posisi: 'Backend Developer',
-      nama_kota: 'Bandung',
-      slug: 'backend-developer',
-      responsibilities: 'Mengembangkan dan memelihara API menggunakan Laravel',
-      requirements: 'PHP,Laravel,MySQL,API Development',
-      created_at: '2023-12-15T09:30:00.000Z',
-      updated_at: '2023-12-15T09:30:00.000Z',
-    },
-    {
-      id: 3,
-      posisi: 'UI/UX Designer',
-      nama_kota: 'Surabaya',
-      slug: 'ui-ux-designer',
-      responsibilities: 'Mendesain antarmuka pengguna yang menarik dan mudah digunakan',
-      requirements: 'Figma,Adobe XD,UI Design,User Research',
-      created_at: '2023-12-14T14:15:00.000Z',
-      updated_at: '2023-12-14T14:15:00.000Z',
-    },
-  ];
+  try {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier`);
+    const careers = res.data.data;
+    
+    // Cari karier berdasarkan slug
+    const career = careers.find((c: CareerDetail) => c.slug === slug) || null;
 
-  // Cari karier berdasarkan slug
-  const career = dummyCareers.find((c) => c.slug === slug) || null;
+    // Jika karier tidak ditemukan, kembalikan 404
+    if (!career) {
+      return {
+        notFound: true,
+      };
+    }
 
-  // Jika karier tidak ditemukan, kembalikan 404
-  if (!career) {
+    return {
+      props: {
+        ...(await serverSideTranslations(locale || 'id', ['common', 'footer'])),
+        career,
+      },
+      revalidate: 60, // Re-generate halaman setiap 60 detik
+    };
+  } catch (error) {
+    console.error('Error fetching career:', error);
     return {
       notFound: true,
     };
   }
-
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'id', ['common', 'footer'])),
-      career,
-    },
-    revalidate: 60, // Re-generate halaman setiap 60 detik
-  };
 };
 
-const CareerDetail: React.FC<CareerDetailProps> = ({ career }) => {
+const CareerDetail: React.FC<CareerDetailProps> = ({ career: initialCareer }) => {
+  const [career, setCareer] = useState<CareerDetail | null>(initialCareer);
+  const [isLoading, setIsLoading] = useState(!initialCareer);
+  const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation('common');
   const router = useRouter();
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCareer = async () => {
+      if (!initialCareer && router.isReady) {
+        setIsLoading(true);
+        try {
+          const { slug } = router.query;
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier`);
+          const careers = res.data.data;
+          const careerData = careers.find((c: CareerDetail) => c.slug === slug) || null;
+          
+          if (!careerData) {
+            setError('Lowongan tidak ditemukan');
+          } else {
+            setCareer(careerData);
+          }
+        } catch (err) {
+          console.error('Error fetching career:', err);
+          setError('Gagal memuat detail lowongan. Silakan coba lagi nanti.');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchCareer();
+  }, [router.isReady, router.query, initialCareer]);
+
+  // Fungsi untuk memformat teks HTML menjadi array
+  const formatHtmlContent = (html: string) => {
+    if (!html) return [];
+    
+    // Hapus tag <ul> dan </ul>
+    const cleaned = html.replace(/<\/?(ul|li)[^>]*>/g, '|')
+                      .replace(/\r\n|\r|\n/g, '')
+                      .split('|')
+                      .filter(item => item.trim() !== '');
+    
+    return cleaned;
+  };
+
+  if (isLoading) {
+    return (
+      <PageTemplate title={t('loading', 'Memuat...')}>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+        </div>
+      </PageTemplate>
+    );
+  }
+
+  if (error || !career) {
+    return (
+      <PageTemplate title={t('error', 'Terjadi Kesalahan')}>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">{error || 'Lowongan tidak ditemukan'}</p>
+            <button
+              onClick={() => router.push('/karier')}
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            >
+              Kembali ke Daftar Lowongan
+            </button>
+          </div>
+        </div>
+      </PageTemplate>
+    );
+  }
 
   // Tampilkan loading jika halaman sedang digenerate
   if (router.isFallback) {
@@ -199,7 +256,7 @@ const CareerDetail: React.FC<CareerDetailProps> = ({ career }) => {
                 {/* Responsibilities */}
                 <div className="bg-white p-6 border-l-4 border-[#4C4C4C] shadow-sm">
                   <div className="flex items-start">
-                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-[#FEF6E8] flex items-center justify-center text-[#4C4C4C] mr-4">
+                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-[#4C4C4C] mr-4">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -208,8 +265,8 @@ const CareerDetail: React.FC<CareerDetailProps> = ({ career }) => {
                       <h2 className="text-xl font-semibold text-[#4C4C4C] mb-3">
                         {t('responsibilities', 'Tanggung Jawab')}
                       </h2>
-                      <div className="text-[#4C4C4C] leading-relaxed space-y-3">
-                        {career.responsibilities.split('.').filter(Boolean).map((item, index) => (
+                      <div className="leading-relaxed space-y-3">
+                        {formatHtmlContent(career.responsibilities).map((item, index) => (
                           <p key={index} className="flex items-start">
                             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#F2AC59] mt-2.5 mr-2 flex-shrink-0"></span>
                             {item.trim()}
@@ -232,16 +289,14 @@ const CareerDetail: React.FC<CareerDetailProps> = ({ career }) => {
                       <h2 className="text-xl font-semibold text-[#4C4C4C] mb-3">
                         {t('qualifications', 'Kualifikasi')}
                       </h2>
-                      <ul className="space-y-3">
-                        {career.requirements.split(',').map((req, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="inline-flex items-center justify-center w-5 h-5 bg-[#FEF6E8] text-[#F2AC59] rounded-full mr-3 flex-shrink-0">
-                              <span className="text-xs font-medium">{index + 1}</span>
-                            </span>
-                            <span className="text-[#4C4C4C]">{req.trim()}</span>
-                          </li>
+                      <div className="leading-relaxed space-y-3">
+                        {formatHtmlContent(career.requirements).map((req, index) => (
+                          <p key={index} className="flex items-start">
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#F2AC59] mt-2.5 mr-2 flex-shrink-0"></span>
+                            {req.trim()}
+                          </p>
                         ))}
-                      </ul>
+                      </div>
                     </div>
                   </div>
                 </div>

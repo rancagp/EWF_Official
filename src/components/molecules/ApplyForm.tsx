@@ -1,35 +1,47 @@
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import axios from 'axios';
+
+interface FormData {
+  fullName: string;
+  phone: string;
+  email: string;
+  experience: string;
+  noticePeriod: string;
+  referral: string;
+  motivation: string;
+  termsAgreed: boolean;
+}
 
 interface ApplyFormProps {
   position: string;
   location: string;
   onClose: () => void;
-  onSubmit: (formData: any, cvFile: File | null) => void;
-  isSubmitting: boolean;
 }
 
-const ApplyForm: React.FC<ApplyFormProps> = ({ position, location, onClose, onSubmit, isSubmitting }) => {
+const ApplyForm: React.FC<ApplyFormProps> = ({ position, location, onClose }) => {
   const { t } = useTranslation('common');
-  const [formData, setFormData] = useState({
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState<FormData>({
     fullName: '',
     phone: '',
     email: '',
     experience: '',
     noticePeriod: '',
-    reference: '',
+    referral: '',
     motivation: '',
     termsAgreed: false,
   });
   const [cvFile, setCvFile] = useState<File | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target as HTMLInputElement;
-    const checked = (e.target as HTMLInputElement).checked;
+    const target = e.target as HTMLInputElement;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const { name } = target;
     
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }));
   };
 
@@ -39,10 +51,72 @@ const ApplyForm: React.FC<ApplyFormProps> = ({ position, location, onClose, onSu
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onSubmit(formData, cvFile);
+    
+    if (!formData.termsAgreed) {
+      alert('Anda harus menyetujui syarat dan ketentuan');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      
+      const formDataToSend = new FormData();
+      formDataToSend.append('position', position);
+      formDataToSend.append('location', location);
+      formDataToSend.append('fullName', formData.fullName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('experience', formData.experience);
+      formDataToSend.append('noticePeriod', formData.noticePeriod);
+      formDataToSend.append('motivation', formData.motivation);
+      formDataToSend.append('referral', formData.referral || '');
+      
+      if (cvFile) {
+        formDataToSend.append('cv', cvFile);
+      }
+      
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/karier/apply`,
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      
+      if (response.data?.success) {
+        // Reset form
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          experience: '',
+          noticePeriod: '',
+          referral: '',
+          motivation: '',
+          termsAgreed: false,
+        });
+        setCvFile(null);
+        
+        alert('Lamaran berhasil dikirim. Kami akan segera menghubungi Anda.');
+        onClose();
+      } else {
+        throw new Error(response.data?.message || 'Gagal mengirim lamaran');
+      }
+      
+    } catch (error: any) {
+      console.error('Error submitting application:', error);
+      const errorMessage = error.response?.data?.message || 
+                         error.message || 
+                         'Terjadi kesalahan saat mengirim lamaran. Silakan coba lagi nanti.';
+      alert(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -158,16 +232,16 @@ const ApplyForm: React.FC<ApplyFormProps> = ({ position, location, onClose, onSu
 
       {/* Baris 4: Sumber Lowongan */}
       <div>
-        <label htmlFor="reference" className="block text-sm font-medium text-[#4C4C4C] mb-1">
+        <label htmlFor="referral" className="block text-sm font-medium text-[#4C4C4C] mb-1">
           Sumber Lowongan <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
-          id="reference"
-          name="reference"
+          id="referral"
+          name="referral"
           required
           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-[#F2AC59] focus:outline-none focus:ring-1 focus:ring-[#F2AC59]"
-          value={formData.reference}
+          value={formData.referral}
           onChange={handleInputChange}
           placeholder="Dari mana Anda mengetahui lowongan ini?"
         />
