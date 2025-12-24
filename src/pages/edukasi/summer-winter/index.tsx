@@ -132,7 +132,7 @@ const SummerWinterPage = () => {
                   <h3 className="text-xl font-semibold text-[#4C4C4D] mb-4">{translate('ukTime.sections.summerStart.title')}</h3>
                   <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-4">
                     <img 
-                      src="/assets/musim-panas-mulai.png" 
+                      src="/assets/DAYLIGHT-01.jpg" 
                       alt={translate('ukTime.sections.summerStart.title')} 
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     />
@@ -145,7 +145,7 @@ const SummerWinterPage = () => {
                   <h3 className="text-xl font-semibold text-[#4C4C4D] mb-4">{translate('ukTime.sections.summerEnd.title')}</h3>
                   <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-4">
                     <img 
-                      src="/assets/musim-panas-berakhir.png" 
+                      src="/assets/DAYLIGHT-02.jpg" 
                       alt={translate('ukTime.sections.summerEnd.title')}
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     />
@@ -291,7 +291,7 @@ const SummerWinterPage = () => {
                   <h3 className="text-xl font-semibold text-[#4C4C4D] mb-4">{translate('usTime.sections.daylightStart.title')}</h3>
                   <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-4">
                     <img 
-                      src="/assets/musim-panas-mulai.png" 
+                      src="/assets/DAYLIGHT-01.jpg" 
                       alt={translate('usTime.sections.daylightStart.title')}
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     />
@@ -304,7 +304,7 @@ const SummerWinterPage = () => {
                   <h3 className="text-xl font-semibold text-[#4C4C4D] mb-4">{translate('usTime.sections.daylightEnd.title')}</h3>
                   <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-4">
                     <img 
-                      src="/assets/musim-panas-berakhir.png" 
+                      src="/assets/DAYLIGHT-02.jpg" 
                       alt={translate('usTime.sections.daylightEnd.title')}
                       className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     />
