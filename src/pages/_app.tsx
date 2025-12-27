@@ -1,16 +1,16 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Script from "next/script";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { appWithTranslation, useTranslation } from "next-i18next";
 import nextI18NextConfig from "../../next-i18next.config";
 import LoadingScreen from "@/components/organisms/LoadingScreen";
 import ScrollToTop from "@/components/atoms/ScrollToTop";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+// ✅ Pakai env kalau ada, fallback biar gak null di client
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-4FYTRTD1KR";
 
-// Optional: biar TS gak error pas akses window.gtag
 declare global {
   interface Window {
     dataLayer: any[];
@@ -24,39 +24,7 @@ function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
   const { locale } = router;
 
-  // ✅ Track GA4 page_view on route change (SPA)
-  useEffect(() => {
-    if (!GA_ID) return;
-    if (typeof window === "undefined") return;
-
-    // Stub gtag kalau script belum keburu ready (aman)
-    window.dataLayer = window.dataLayer || [];
-    window.gtag =
-      window.gtag ||
-      function () {
-        window.dataLayer.push(arguments);
-      };
-
-    const pageview = (url: string) => {
-      window.gtag("event", "page_view", {
-        page_path: url,
-        page_location: window.location.href,
-        page_title: document.title,
-      });
-    };
-
-    // initial pageview
-    pageview(window.location.pathname + window.location.search);
-
-    const handleRoute = (url: string) => pageview(url);
-
-    router.events.on("routeChangeComplete", handleRoute);
-    return () => {
-      router.events.off("routeChangeComplete", handleRoute);
-    };
-  }, [router.events]);
-
-  // ✅ Handle loading screen (rapihin: satu kali aja biar ga dobel listener)
+  // ✅ Loading screen (1x listener, gak dobel)
   useEffect(() => {
     const handleStart = () => setLoading(true);
     const handleStop = () => setLoading(false);
@@ -65,7 +33,7 @@ function App({ Component, pageProps }: AppProps) {
     router.events.on("routeChangeComplete", handleStop);
     router.events.on("routeChangeError", handleStop);
 
-    const initialLoad = setTimeout(() => setLoading(false), 1000);
+    const initialLoad = setTimeout(() => setLoading(false), 500);
 
     return () => {
       router.events.off("routeChangeStart", handleStart);
@@ -75,7 +43,41 @@ function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
 
-  // ✅ Handle locale changes and URL consistency (punya lu, gue biarin)
+  // ✅ GA4 Pageview untuk SPA (route change)
+  useEffect(() => {
+    if (!GA_ID) return;
+    if (!router.isReady) return;
+    if (typeof window === "undefined") return;
+
+    // stub gtag (kalau script belum ready, tetep ke-queue di dataLayer)
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =
+      window.gtag ||
+      function () {
+        window.dataLayer.push(arguments);
+      };
+
+    const trackPageView = (url: string) => {
+      // Cara paling umum untuk SPA: config + page_path
+      window.gtag("config", GA_ID, {
+        page_path: url,
+      });
+    };
+
+    // initial pageview
+    trackPageView(router.asPath);
+
+    const handleRouteChange = (url: string) => {
+      trackPageView(url);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.isReady, router.asPath, router.events]);
+
+  // ✅ Locale changes + URL consistency (punya lu, gue rapihin dependency aja)
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -132,15 +134,17 @@ function App({ Component, pageProps }: AppProps) {
       {GA_ID ? (
         <>
           <Script
+            id="gtag-src"
             strategy="afterInteractive"
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           />
           <Script id="gtag-init" strategy="afterInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
+              function gtag(){window.dataLayer.push(arguments);}
+              window.gtag = window.gtag || gtag;
               gtag('js', new Date());
-              // penting: matiin auto page_view, kita manual biar SPA akurat
+              // biar gak double pageview (kita track manual via router)
               gtag('config', '${GA_ID}', { send_page_view: false });
             `}
           </Script>
