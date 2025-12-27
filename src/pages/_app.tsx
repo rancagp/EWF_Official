@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import Script from "next/script";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { appWithTranslation, useTranslation } from "next-i18next";
@@ -7,12 +8,15 @@ import nextI18NextConfig from "../../next-i18next.config";
 import LoadingScreen from "@/components/organisms/LoadingScreen";
 import ScrollToTop from "@/components/atoms/ScrollToTop";
 
-// ✅ Firebase init + Analytics helper
-import {
-  firebaseApp,
-  initFirebaseAnalytics,
-  logAnalyticsEvent,
-} from "@/config/firebase";
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
+// Optional: biar TS gak error pas akses window.gtag
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
 
 function App({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(true);
@@ -20,25 +24,31 @@ function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();
   const { locale } = router;
 
-  // ✅ (Optional) biar kepake & kebukti connect (hapus juga gapapa)
+  // ✅ Track GA4 page_view on route change (SPA)
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") {
-      console.log("Firebase connected:", firebaseApp.name);
-    }
-  }, []);
+    if (!GA_ID) return;
+    if (typeof window === "undefined") return;
 
-  // ✅ Firebase Analytics (client only)
-  useEffect(() => {
-    initFirebaseAnalytics()
-      .then(() => logAnalyticsEvent("ewf_app_loaded"))
-      .catch(() => {});
-  }, []);
+    // Stub gtag kalau script belum keburu ready (aman)
+    window.dataLayer = window.dataLayer || [];
+    window.gtag =
+      window.gtag ||
+      function () {
+        window.dataLayer.push(arguments);
+      };
 
-  // ✅ Track page views on route change (SPA)
-  useEffect(() => {
-    const handleRoute = (url: string) => {
-      logAnalyticsEvent("page_view", { page_path: url });
+    const pageview = (url: string) => {
+      window.gtag("event", "page_view", {
+        page_path: url,
+        page_location: window.location.href,
+        page_title: document.title,
+      });
     };
+
+    // initial pageview
+    pageview(window.location.pathname + window.location.search);
+
+    const handleRoute = (url: string) => pageview(url);
 
     router.events.on("routeChangeComplete", handleRoute);
     return () => {
@@ -46,23 +56,26 @@ function App({ Component, pageProps }: AppProps) {
     };
   }, [router.events]);
 
-  // Handle loading state
+  // ✅ Handle loading screen (rapihin: satu kali aja biar ga dobel listener)
   useEffect(() => {
     const handleStart = () => setLoading(true);
-    const handleComplete = () => setLoading(false);
+    const handleStop = () => setLoading(false);
 
     router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
+    router.events.on("routeChangeComplete", handleStop);
+    router.events.on("routeChangeError", handleStop);
+
+    const initialLoad = setTimeout(() => setLoading(false), 1000);
 
     return () => {
       router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
+      router.events.off("routeChangeComplete", handleStop);
+      router.events.off("routeChangeError", handleStop);
+      clearTimeout(initialLoad);
     };
-  }, [router]);
+  }, [router.events]);
 
-  // Handle locale changes and URL consistency
+  // ✅ Handle locale changes and URL consistency (punya lu, gue biarin)
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -111,31 +124,29 @@ function App({ Component, pageProps }: AppProps) {
         });
       }
     }
-  }, [router.isReady, locale, router.asPath]);
-
-  // Handle loading screen
-  useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleStop = () => setLoading(false);
-
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleStop);
-    router.events.on("routeChangeError", handleStop);
-
-    const initialLoad = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleStop);
-      router.events.off("routeChangeError", handleStop);
-      clearTimeout(initialLoad);
-    };
-  }, [router]);
+  }, [router.isReady, locale, router.asPath, i18n, router]);
 
   return (
     <>
+      {/* ✅ Google Tag (gtag.js) */}
+      {GA_ID ? (
+        <>
+          <Script
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          />
+          <Script id="gtag-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              // penting: matiin auto page_view, kita manual biar SPA akurat
+              gtag('config', '${GA_ID}', { send_page_view: false });
+            `}
+          </Script>
+        </>
+      ) : null}
+
       <LoadingScreen show={loading} />
       {!loading && <Component {...pageProps} />}
       <ScrollToTop />
