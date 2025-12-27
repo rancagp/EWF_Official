@@ -1,28 +1,28 @@
 import { Html, Head, Main, NextScript } from "next/document";
-import Script from "next/script";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-4FYTRTD1KR";
 
 export default function Document() {
-  // Default language
   const lang = "id";
 
   return (
     <Html lang={lang}>
       <Head>
-        {/* ✅ Google Tag (gtag.js) */}
-        <Script
-          strategy="beforeInteractive"
+        {/* ✅ Google tag (gtag.js) */}
+        <script
+          async
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         />
-        <Script id="gtag-init" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){window.dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}');
+            `,
+          }}
+        />
 
         {/* Favicon */}
         <link
@@ -52,7 +52,6 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-
       <body className="antialiased">
         <Main />
         <NextScript />
