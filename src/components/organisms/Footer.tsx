@@ -159,7 +159,7 @@ const Footer = () => {
 
                     {/* Legal Info */}
                     <div className="md:col-span-6">
-                        <h3 className="text-sm font-bold text-[#1A1A1A] mb-4 uppercase tracking-wider">{legal}</h3>
+                        {/* <h3 className="text-sm font-bold text-[#1A1A1A] mb-4 uppercase tracking-wider">{legal}</h3> */}
                         <div className="flex flex-wrap gap-4">
                             <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm flex-1 min-w-[200px]">
                                 <img 
