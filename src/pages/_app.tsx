@@ -7,8 +7,12 @@ import nextI18NextConfig from "../../next-i18next.config";
 import LoadingScreen from "@/components/organisms/LoadingScreen";
 import ScrollToTop from "@/components/atoms/ScrollToTop";
 
-// ✅ Firebase init (pastikan file ini ada: src/config/firebase.ts)
-import { firebaseApp } from "@/config/firebase";
+// ✅ Firebase init + Analytics helper
+import {
+  firebaseApp,
+  initFirebaseAnalytics,
+  logAnalyticsEvent,
+} from "@/config/firebase";
 
 function App({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(true);
@@ -22,6 +26,25 @@ function App({ Component, pageProps }: AppProps) {
       console.log("Firebase connected:", firebaseApp.name);
     }
   }, []);
+
+  // ✅ Firebase Analytics (client only)
+  useEffect(() => {
+    initFirebaseAnalytics()
+      .then(() => logAnalyticsEvent("ewf_app_loaded"))
+      .catch(() => {});
+  }, []);
+
+  // ✅ Track page views on route change (SPA)
+  useEffect(() => {
+    const handleRoute = (url: string) => {
+      logAnalyticsEvent("page_view", { page_path: url });
+    };
+
+    router.events.on("routeChangeComplete", handleRoute);
+    return () => {
+      router.events.off("routeChangeComplete", handleRoute);
+    };
+  }, [router.events]);
 
   // Handle loading state
   useEffect(() => {
@@ -46,15 +69,12 @@ function App({ Component, pageProps }: AppProps) {
     const currentPath = router.asPath;
     const currentLocale = locale || "id";
 
-    // Set the language in localStorage for persistence
     if (typeof window !== "undefined") {
       localStorage.setItem("preferred-locale", currentLocale);
     }
 
-    // Update i18n language
     i18n.changeLanguage(currentLocale);
 
-    // Skip if we're already on the correct path
     if (
       currentLocale === "id" &&
       !currentPath.startsWith("/id") &&
@@ -64,7 +84,6 @@ function App({ Component, pageProps }: AppProps) {
     if (currentLocale !== "id" && currentPath.startsWith(`/${currentLocale}`))
       return;
 
-    // For default locale (id), ensure no /id prefix
     if (
       currentLocale === "id" &&
       (currentPath.startsWith("/id/") || currentPath === "/id")
@@ -76,7 +95,6 @@ function App({ Component, pageProps }: AppProps) {
       return;
     }
 
-    // For non-default locales, ensure they have the correct prefix
     if (currentLocale !== "id") {
       const cleanPath = currentPath.startsWith("/id/")
         ? currentPath.replace(/^\/id/, "")
