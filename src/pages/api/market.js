@@ -1,37 +1,3 @@
-// Sample data sebagai fallback jika API eksternal bermasalah
-const sampleData = [
-  {
-    symbol: "Gold",
-    last: 4037.75,
-    high: 4041.23,
-    low: 4001.8,
-    open: 4020.8,
-    prevClose: 4040.4,
-    valueChange: -2.65,
-    percentChange: -0.07
-  },
-  {
-    symbol: "USD/IDR",
-    last: 16528,
-    high: 16574,
-    low: 16496,
-    open: 16574,
-    prevClose: 16575,
-    valueChange: -47,
-    percentChange: -0.28
-  },
-  {
-    symbol: "EURUSD",
-    last: 1.1647,
-    high: 1.1648,
-    low: 1.1626,
-    open: 1.1626,
-    prevClose: 1.1626,
-    valueChange: 0.0021,
-    percentChange: 0.18
-  }
-];
-
 let lastGoodData = [];
 let lastFetchedAt = 0;
 const MIN_REFRESH_MS = 2000;
@@ -72,8 +38,7 @@ export default async function handler(req, res) {
     const result = await response.json();
     
     if (result.status !== 'success' || !Array.isArray(result.data)) {
-      console.error('Invalid API response format, using sample data');
-      return res.status(200).json(sampleData);
+      throw new Error('Invalid API response format');
     }
     
     // Proses data
@@ -100,13 +65,11 @@ export default async function handler(req, res) {
       lastGoodData = filteredItems;
       lastFetchedAt = now;
       return res.status(200).json(filteredItems);
-    } else {
-      // Jika tidak ada data valid, kembalikan sample data
-      return res.status(200).json(sampleData);
     }
+
+    throw new Error('Data quotes kosong');
   } catch (error) {
     console.error('Error in market API route:', error.message);
-    // Kembalikan sample data jika terjadi error
-    return res.status(200).json(sampleData);
+    return res.status(502).json({ message: 'Gagal mengambil live quotes' });
   }
 }
