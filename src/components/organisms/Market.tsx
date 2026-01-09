@@ -1,7 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
-import { useMarketSocket, MarketItem } from '@/hooks/useMarketSocket';
+
+type Direction = 'up' | 'down' | 'neutral';
+
+interface MarketItem {
+  symbol: string;
+  last: number;
+  percentChange: number;
+  direction?: Direction;
+}
 
 const LastUpdatedTime = () => {
   const [currentTime, setCurrentTime] = useState<string>('');
@@ -132,17 +140,69 @@ const MarketCard = ({ item, index }: { item: MarketItem; index: number }) => {
 };
 
 export default function Market() {
+  const [marketData, setMarketData] = useState<MarketItem[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const prevDataRef = useRef<MarketItem[]>([]);
   const { t } = useTranslation('market');
-  const { data: marketData, error, connected } = useMarketSocket();
 
   useEffect(() => {
-    if (marketData.length > 0 || error) {
-      setIsLoading(false);
-    } else if (!connected) {
-      setIsLoading(true);
-    }
-  }, [marketData, error, connected]);
+    const fetchMarketData = async () => {
+      try {
+        const res = await fetch('/api/market');
+        
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Error ${res.status}: ${res.statusText || t('errorFetching')}`);
+        }
+
+        const data = await res.json();
+        
+        // Pastikan data adalah array
+        if (!Array.isArray(data)) {
+          throw new Error(t('invalidDataFormat'));
+        }
+
+        // Proses data
+        const processedData = data.map((item: any) => ({
+          symbol: item.symbol || '',
+          last: Number(item.last) || 0,
+          percentChange: Number(item.percentChange) || 0
+        }));
+
+        // Tambahkan arah berdasarkan data sebelumnya
+        const dataWithDirection = processedData.map((item: MarketItem) => {
+          const prevItem = prevDataRef.current.find(prev => prev.symbol === item.symbol);
+          let direction: Direction = 'neutral';
+          
+          if (prevItem) {
+            if (item.last > prevItem.last) direction = 'up';
+            else if (item.last < prevItem.last) direction = 'down';
+          }
+          
+          return { ...item, direction };
+        });
+        
+        setMarketData(dataWithDirection);
+        prevDataRef.current = dataWithDirection;
+        setErrorMessage('');
+      } catch (error: any) {
+        console.error('Error:', error);
+        setErrorMessage(error.message || t('error'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // Ambil data pertama kali
+    fetchMarketData();
+    
+    // Atur polling setiap 5 detik
+    const intervalId = setInterval(fetchMarketData, 5000);
+    
+    // Bersihkan interval saat komponen di-unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <section className="bg-gray-50 py-12 md:py-6">
@@ -174,9 +234,9 @@ export default function Market() {
               </div>
             ))}
           </div>
-        ) : error ? (
+        ) : errorMessage ? (
           <div className="text-center py-8">
-            <p className="text-red-500 mb-4">{error}</p>
+            <p className="text-red-500 mb-4">{errorMessage}</p>
             <button 
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"

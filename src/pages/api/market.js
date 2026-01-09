@@ -32,10 +32,20 @@ const sampleData = [
   }
 ];
 
+let lastGoodData = [];
+let lastFetchedAt = 0;
+const MIN_REFRESH_MS = 2000;
+const HIDDEN_SYMBOLS = new Set(['XAG10_BBJ', 'XAGF_BBJ']);
+
 export default async function handler(req, res) {
   try {
     const LIVE_QUOTES_URL = "https://endpoapi-production-3202.up.railway.app/api/live-quotes";
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+    const now = Date.now();
+    if (lastGoodData.length > 0 && now - lastFetchedAt < MIN_REFRESH_MS) {
+      return res.status(200).json(lastGoodData);
+    }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort('timeout'), 5000);
@@ -83,10 +93,12 @@ export default async function handler(req, res) {
     }));
 
     // Sembunyikan simbol tertentu
-    const filteredItems = validItems.filter(item => item.symbol !== 'XAG10_BBJ');
+    const filteredItems = validItems.filter(item => !HIDDEN_SYMBOLS.has(item.symbol));
     
     // Pastikan ada data yang valid
     if (filteredItems.length > 0) {
+      lastGoodData = filteredItems;
+      lastFetchedAt = now;
       return res.status(200).json(filteredItems);
     } else {
       // Jika tidak ada data valid, kembalikan sample data
