@@ -1,37 +1,3 @@
-// Sample data sebagai fallback jika API eksternal bermasalah
-const sampleData = [
-  {
-    symbol: "Gold",
-    last: 4037.75,
-    high: 4041.23,
-    low: 4001.8,
-    open: 4020.8,
-    prevClose: 4040.4,
-    valueChange: -2.65,
-    percentChange: -0.07
-  },
-  {
-    symbol: "USD/IDR",
-    last: 16528,
-    high: 16574,
-    low: 16496,
-    open: 16574,
-    prevClose: 16575,
-    valueChange: -47,
-    percentChange: -0.28
-  },
-  {
-    symbol: "EURUSD",
-    last: 1.1647,
-    high: 1.1648,
-    low: 1.1626,
-    open: 1.1626,
-    prevClose: 1.1626,
-    valueChange: 0.0021,
-    percentChange: 0.18
-  }
-];
-
 export default async function handler(req, res) {
   try {
     const LIVE_QUOTES_URL = "https://endpoapi-production-3202.up.railway.app/api/live-quotes";
@@ -80,8 +46,7 @@ export default async function handler(req, res) {
 
     const dataMap = result?.data && typeof result.data === 'object' ? result.data : result;
     if (!dataMap || typeof dataMap !== 'object') {
-      console.error('Invalid API response format, using sample data');
-      return res.status(200).json(sampleData);
+      throw new Error('Invalid API response format');
     }
 
     const validItems = Array.isArray(dataMap)
@@ -92,15 +57,13 @@ export default async function handler(req, res) {
     const filteredItems = validItems.filter(item => item.symbol !== 'XAG10_BBJ');
     
     // Pastikan ada data yang valid
-    if (filteredItems.length > 0) {
-      return res.status(200).json(filteredItems);
-    } else {
-      // Jika tidak ada data valid, kembalikan sample data
-      return res.status(200).json(sampleData);
+    if (filteredItems.length === 0) {
+      throw new Error('Data quotes kosong');
     }
+
+    return res.status(200).json(filteredItems);
   } catch (error) {
     console.error('Error in market API route:', error.message);
-    // Kembalikan sample data jika terjadi error
-    return res.status(200).json(sampleData);
+    return res.status(502).json({ message: 'Gagal mengambil live quotes' });
   }
 }
