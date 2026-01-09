@@ -35,6 +35,7 @@ const sampleData = [
 export default async function handler(req, res) {
   try {
     const LIVE_QUOTES_URL = "https://endpoapi-production-3202.up.railway.app/api/live-quotes";
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
     const normalizeItem = (symbolKey, item) => ({
       symbol: String(
@@ -53,16 +54,23 @@ export default async function handler(req, res) {
       ask: Number(item.ask ?? item.Ask ?? item.sell ?? 0) || 0
     });
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort('timeout'), 5000);
+
     // Coba ambil data dari API live quotes
     const response = await fetch(LIVE_QUOTES_URL, {
       headers: {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
-        'Expires': '0'
+        'Expires': '0',
+        'User-Agent': 'EWF-Official/1.0'
       },
-      signal: AbortSignal.timeout(3000)
+      cache: 'no-store',
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
