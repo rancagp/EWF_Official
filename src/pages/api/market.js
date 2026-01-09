@@ -34,51 +34,58 @@ const sampleData = [
 
 export default async function handler(req, res) {
   try {
-    // Coba ambil data dari API eksternal
-    const response = await fetch(
-      "https://endpoapi-production-3202.up.railway.app/api/quotes",
-      {
-        headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        },
-        // Timeout setelah 3 detik
-        signal: AbortSignal.timeout(3000)
-      }
-    );
-    
+    const LIVE_QUOTES_URL = "https://endpoapi-production-3202.up.railway.app/api/live-quotes";
+
+    const normalizeItem = (symbolKey, item) => ({
+      symbol: String(
+        item.symbol || item.Symbol || item.name || symbolKey || ''
+      ),
+      last: Number(item.last ?? item.Last ?? item.price ?? item.buy ?? item.bid ?? 0) || 0,
+      high: Number(item.high ?? item.High ?? item.hprice ?? 0) || 0,
+      low: Number(item.low ?? item.Low ?? item.lprice ?? 0) || 0,
+      open: Number(item.open ?? item.Open ?? item.oprice ?? 0) || 0,
+      time: item.time || item.Time || item.date_time || new Date().toISOString(),
+      prevClose: Number(item.prevClose ?? item.PrevClose ?? 0) || 0,
+      valueChange: Number(item.valueChange ?? item.change ?? item.Change ?? item.price_change ?? 0) || 0,
+      percentChange: Number(item.percentChange ?? item.changePercent ?? item.percent ?? 0) || 0,
+      Volume: Number(item.Volume ?? item.volume ?? 0) || 0,
+      bid: Number(item.bid ?? item.Bid ?? item.buy ?? 0) || 0,
+      ask: Number(item.ask ?? item.Ask ?? item.sell ?? 0) || 0
+    });
+
+    // Coba ambil data dari API live quotes
+    const response = await fetch(LIVE_QUOTES_URL, {
+      headers: {
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      },
+      signal: AbortSignal.timeout(3000)
+    });
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const result = await response.json();
-    
-    if (result.status !== 'success' || !Array.isArray(result.data)) {
+
+    const dataMap = result?.data && typeof result.data === 'object' ? result.data : result;
+    if (!dataMap || typeof dataMap !== 'object') {
       console.error('Invalid API response format, using sample data');
       return res.status(200).json(sampleData);
     }
-    
-    // Proses data
-    const validItems = result.data.map(item => ({
-      symbol: String(item.symbol || ''),
-      last: Number(item.last) || 0,
-        high: Number(item.high) || 0,
-        low: Number(item.low) || 0,
-        open: Number(item.open) || 0,
-        time: item.time || new Date().toISOString(),
-        prevClose: Number(item.prevClose) || 0,
-        valueChange: Number(item.valueChange) || 0,
-        percentChange: Number(item.percentChange) || 0,
-        Volume: Number(item.Volume) || 0,
-        bid: Number(item.bid) || 0,
-        ask: Number(item.ask) || 0
-      }));
+
+    const validItems = Array.isArray(dataMap)
+      ? dataMap.map(item => normalizeItem('', item))
+      : Object.entries(dataMap).map(([key, item]) => normalizeItem(key, item));
+
+    // Sembunyikan simbol tertentu
+    const filteredItems = validItems.filter(item => item.symbol !== 'XAG10_BBJ');
     
     // Pastikan ada data yang valid
-    if (validItems.length > 0) {
-      return res.status(200).json(validItems);
+    if (filteredItems.length > 0) {
+      return res.status(200).json(filteredItems);
     } else {
       // Jika tidak ada data valid, kembalikan sample data
       return res.status(200).json(sampleData);
