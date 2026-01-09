@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchLatestNews, NewsItem } from "@/services/newsService";
-import Link from "next/link";
-
-interface MarketItem {
-  symbol: string;
-  last: number;
-  percentChange: number;
-}
+import { useMarketSocket, MarketItem } from "@/hooks/useMarketSocket";
 
 interface NewsItemWithCategory extends Omit<NewsItem, 'category_id'> {
   kategori: {
@@ -17,10 +11,10 @@ interface NewsItemWithCategory extends Omit<NewsItem, 'category_id'> {
 }
 
 export default function MarketUpdate() {
-    const [marketData, setMarketData] = useState<MarketItem[]>([]);
     const [latestNews, setLatestNews] = useState<NewsItemWithCategory[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string>("");
+    const { data: marketData, error } = useMarketSocket();
 
     // Fungsi untuk update berita
     const updateNews = (news: NewsItem[]) => {
@@ -39,41 +33,9 @@ export default function MarketUpdate() {
     };
 
     useEffect(() => {
-        const fetchMarketData = async () => {
-            try {
-                const res = await fetch('/api/market');
-
-                if (!res.ok) {
-                    const errorText = `${res.status} ${res.statusText}`;
-                    console.error('Respon error:', errorText);
-                    setErrorMessage(errorText);
-                    setMarketData([]);
-                    return;
-                }
-
-                const data = await res.json();
-
-                const filteredData = data
-                    .filter((item: any) => item?.symbol && typeof item.last === 'number')
-                    .map((item: any): MarketItem => ({
-                        symbol: String(item.symbol),
-                        last: Number(item.last),
-                        percentChange: Number(item.percentChange) || 0,
-                    }));
-
-                setMarketData(filteredData);
-                setErrorMessage(""); // clear error
-            } catch (error: any) {
-                console.error('Fetch gagal:', error);
-                setErrorMessage(error?.message || "Gagal memuat data");
-                setMarketData([]);
-            }
-        };
-
         const fetchData = async () => {
             try {
                 await Promise.all([
-                    fetchMarketData(),
                     fetchLatestNews(5).then(updateNews),
                 ]);
             } catch (error) {
@@ -85,21 +47,29 @@ export default function MarketUpdate() {
 
         fetchData();
 
-        // Fetch data market lebih sering (setiap 10 detik)
-        const marketInterval = setInterval(() => {
-            fetchMarketData();
-        }, 10000);
-
         // Fetch data berita lebih jarang (setiap 5 menit)
         const newsInterval = setInterval(() => {
             fetchLatestNews(5).then(updateNews);
         }, 5 * 60 * 1000);
 
         return () => {
-            clearInterval(marketInterval);
             clearInterval(newsInterval);
         };
     }, []);
+
+    useEffect(() => {
+        if (error) {
+            setErrorMessage(error);
+        } else {
+            setErrorMessage("");
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (marketData.length > 0 || latestNews.length > 0) {
+            setLoading(false);
+        }
+    }, [marketData, latestNews]);
 
     const formatPrice = (symbol: string, price: number): string => {
         if (!price && price !== 0) return '-';
