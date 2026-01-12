@@ -5,5 +5,22 @@
   "lastUpdated": "Data updated every 5 seconds • Last updated:",
   "errorFetching": "Failed to fetch data",
   "invalidDataFormat": "Invalid data format",
-  "reload": "Reload"
+  "reload": "Reload",
+  "empty": "No data",
+  "table": {
+    "symbol": "Symbol",
+    "last": "Last",
+    "bid": "Buy",
+    "ask": "Sell",
+    "open": "Open",
+    "high": "High",
+    "low": "Low",
+    "close": "Close",
+    "percent": "%"
+  },
+  "cta": {
+    "eyebrow": "REAL-TIME MARKET DATA",
+    "headline": "Monitor open, low, and close from live quotes for currencies and commodities through this dedicated page.",
+    "button": "View Live Quotes"
+  }
 }

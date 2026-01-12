@@ -7,6 +7,14 @@
   "viewDetails": "Lihat Detail",
   "viewAllProducts": "Lihat Semua Produk",
   "defaultDescription": "Temukan peluang investasi terbaik dengan produk unggulan kami.",
+  "liveQuotes": {
+    "name": "Live Quotes Data Pasar",
+    "description": "Pantau pergerakan harga pasar real-time langsung dari beranda, kini tersedia sebagai halaman khusus.",
+    "pageTitle": "Live Quotes Data Pasar",
+    "pageSubtitle": "Update harga real-time untuk instrumen keuangan terkini.",
+    "backToSpa": "Kembali ke Produk SPA",
+    "backToHome": "Kembali ke Beranda"
+  },
   "productAdvantages": {
     "title": "Keunggulan Produk",
     "description": "Keunggulan produk PT Equityworld Futures dirancang untuk mendukung strategi perdagangan nasabah secara efisien, fleksibel, dan kompetitif.",

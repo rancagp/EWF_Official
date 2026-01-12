@@ -9,6 +9,7 @@ import ProdukContainer from "@/components/organisms/ProdukContainer";
 import BeritaSection from "@/components/organisms/BeritaSection";
 import AboutUs from "@/components/organisms/AboutUs";
 import Iso from "@/components/organisms/Market";
+import LiveQuotesCta from "@/components/organisms/LiveQuotesCta";
 import Pengumuman from "@/components/organisms/Pengumuman";
 import WelcomeModal from "@/components/moleculs/WelcomeModal";
 import WakilPialangSection from "@/components/organisms/WakilPialangSection";
@@ -76,6 +77,8 @@ export default function HomePage() {
         <hr className="border-gray-200 " />
 
         <Iso />
+
+        <LiveQuotesCta />
 
         <hr className="border-gray-200" />
 

@@ -28,6 +28,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
     className = '' 
 }) => {
     const { t } = useTranslation('produk');
+
+    const imageSrc = (() => {
+        const image = (product.image || '').trim();
+        if (!image) return '/images/placeholder.jpg';
+        if (image.startsWith('http://') || image.startsWith('https://')) return image;
+        if (image.startsWith('/')) return image;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/img/produk/${image}`;
+    })();
+
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         if (onClick) {
@@ -65,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     {/* Product Image */}
                     <div className="relative h-full w-full">
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/img/produk/${product.image}`}
+                            src={imageSrc}
                             alt={product.name}
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-110"

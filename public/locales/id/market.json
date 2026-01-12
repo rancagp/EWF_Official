@@ -5,5 +5,22 @@
   "lastUpdated": "Data diperbarui setiap 5 detik • Terakhir diperbarui:",
   "errorFetching": "Gagal mengambil data",
   "invalidDataFormat": "Format data tidak valid",
-  "reload": "Muat Ulang"
+  "reload": "Muat Ulang",
+  "empty": "Tidak ada data",
+  "table": {
+    "symbol": "Simbol",
+    "last": "Terakhir",
+    "bid": "Buy",
+    "ask": "Sell",
+    "open": "Open",
+    "high": "Tertinggi",
+    "low": "Terendah",
+    "close": "Close",
+    "percent": "%"
+  },
+  "cta": {
+    "eyebrow": "DATA PASAR REAL-TIME",
+    "headline": "Pantau open, low, dan close dari live quotes untuk mata uang dan komoditas melalui halaman khusus ini.",
+    "button": "Lihat Live Quotes"
+  }
 }

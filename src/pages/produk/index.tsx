@@ -31,6 +31,15 @@ export default function ProdukPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const liveQuotesProduct: Product = {
+        id: -9999,
+        image: "/images/placeholder.jpg",
+        name: t('liveQuotes.name'),
+        slug: "live-quotes",
+        deskripsi: t('liveQuotes.description'),
+        category: "SPA",
+    };
+
     useEffect(() => {
         async function fetchProducts() {
             try {
@@ -69,6 +78,8 @@ export default function ProdukPage() {
         router.push(`/produk/${category.toLowerCase()}/${slug}`);
     };
 
+    const productsToRender = loading ? products : [...products, liveQuotesProduct];
+
     return (
         <PageTemplate title={t('title')}>
             <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
@@ -84,7 +95,7 @@ export default function ProdukPage() {
                     ) : products.length > 0 ? (
                         <div className="space-y-10">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {products.map((product) => {
+                                {productsToRender.map((product) => {
                                     if (!product || !product.category || !product.slug) {
                                         console.warn('Invalid product data:', product);
                                         return null;

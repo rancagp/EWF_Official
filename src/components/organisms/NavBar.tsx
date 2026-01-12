@@ -56,6 +56,7 @@ const baseMenuItems: NavItem[] = [
       { key: "products_allProducts", label: "Semua Produk", href: "/produk" },
       { key: "products_jfxProducts", label: "Produk JFX", href: "/produk/jfx" },
       { key: "products_spaProducts", label: "Produk SPA", href: "/produk/spa" },
+      { key: "products_spaLiveQuotes", label: "Live Quotes Data Pasar", href: "/produk/spa/live-quotes" },
       { key: "products_productAdvantages", label: "Keunggulan Produk", href: "/produk/keunggulan-produk" },
       { key: "products_transactionIllustration", label: "Ilustrasi Transaksi", href: "/prosedur/ilustrasi-transaksi" },
     ],

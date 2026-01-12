@@ -1,0 +1,44 @@
+import { GetStaticProps } from 'next';
+import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import MarketTable from '@/components/organisms/MarketTable';
+import PageTemplate from '@/components/templates/PageTemplate';
+import ProfilContainer from '@/components/templates/PageContainer/Container';
+
+export const getStaticProps: GetStaticProps = async ({ locale = 'id' }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common', 'produk', 'market', 'footer'])),
+    },
+  };
+};
+
+export default function LiveQuotesSpaPage() {
+  const { t } = useTranslation('produk');
+
+  return (
+    <PageTemplate title={t('liveQuotes.pageTitle')}>
+      <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
+        <ProfilContainer title={t('liveQuotes.pageTitle')} description={t('liveQuotes.pageSubtitle')}>
+          <div className="flex flex-wrap gap-3 mb-6">
+            <Link
+              href="/produk/spa"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-[#F2AC59] text-white text-sm font-medium hover:opacity-90 transition"
+            >
+              {t('liveQuotes.backToSpa')}
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex items-center px-4 py-2 rounded-lg bg-gray-100 text-gray-800 text-sm font-medium hover:bg-gray-200 transition"
+            >
+              {t('liveQuotes.backToHome')}
+            </Link>
+          </div>
+
+          <MarketTable />
+        </ProfilContainer>
+      </div>
+    </PageTemplate>
+  );
+}
