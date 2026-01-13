@@ -53,9 +53,10 @@ const defaultBanners: Banner[] = [
 ];
 
 const CTA_ITEMS = [
-    { label: "Daftar Sekarang", link: "https://regol.equityworld-futures.co.id/" },
-    { label: "Demo", link: "https://demo.ew-futures.com/login" },
-    { label: "Live", link: "https://etrade.ew-futures.com/login" },
+    { label: "Demo Registration", link: "https://regol.equityworld-futures.co.id/" },
+    { label: "Demo Account", link: "https://demo.ew-futures.com/login" },
+    { label: "Register Online", link: "https://regol.equityworld-futures.co.id/login" },
+    { label: "Real Account", link: "https://etrade.ew-futures.com/login" },
 ];
 
 export default function CarouselWithContent() {
