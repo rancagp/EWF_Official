@@ -145,7 +145,8 @@ export default function HistoricalDataContent() {
                 setApiData(response.data);
                 
                 // Transform API data to match the expected format
-                const transformedData = transformData(response.data);
+                const hiddenInstruments = new Set(['LSI Daily']);
+                const transformedData = transformData(response.data).filter((item) => !hiddenInstruments.has(item.category));
                 
                 // Sort data by date (newest first)
                 const sortedData = [...transformedData].sort(
@@ -167,7 +168,9 @@ export default function HistoricalDataContent() {
                 ];
                 
                 // Get unique instruments from the API response
-                const uniqueInstruments = Array.from(new Set(response.data.map(item => item.symbol)));
+                const uniqueInstruments = Array.from(new Set(response.data.map(item => item.symbol))).filter(
+                    (instrument) => !hiddenInstruments.has(instrument)
+                );
                 
                 // Sort the instruments based on the defined order
                 const sortedInstruments = uniqueInstruments.sort((a, b) => {
@@ -439,19 +442,14 @@ export default function HistoricalDataContent() {
                                     <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                         Close
                                     </th>
-                                    {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                    {selectedInstrument === 'SNI Daily' && (
                                         <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                             Change
                                         </th>
                                     )}
-                                    {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                    {selectedInstrument === 'SNI Daily' && (
                                         <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                             Volume
-                                        </th>
-                                    )}
-                                    {selectedInstrument === 'HSI Daily' && (
-                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                            Open Interest
                                         </th>
                                     )}
                                 </tr>
@@ -474,19 +472,14 @@ export default function HistoricalDataContent() {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                             {item.close}
                                         </td>
-                                        {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                        {selectedInstrument === 'SNI Daily' && (
                                             <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                                 {item.change}
                                             </td>
                                         )}
-                                        {(selectedInstrument === 'HSI Daily' || selectedInstrument === 'SNI Daily') && (
+                                        {selectedInstrument === 'SNI Daily' && (
                                             <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                                 {item.volume ? item.volume.toLocaleString() : '-'}
-                                            </td>
-                                        )}
-                                        {selectedInstrument === 'HSI Daily' && (
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
-                                                {item.openInterest ? item.openInterest.toLocaleString() : '-'}
                                             </td>
                                         )}
                                     </tr>
