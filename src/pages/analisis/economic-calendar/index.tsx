@@ -4,8 +4,7 @@ import PageTemplate from "@/components/templates/PageTemplate";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTranslation } from 'next-i18next';
 import { GetStaticProps } from 'next';
-import { fetchEconomicCalendar, EconomicEvent } from '@/services/economicCalendarService';
-import { addDays, isToday, isThisWeek, isSameWeek } from 'date-fns';
+import { CalendarFilterKey, fetchEconomicCalendar, EconomicEvent } from '@/services/economicCalendarService';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
@@ -18,12 +17,12 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 export default function EconomicCalendar() {
   const { t } = useTranslation('economic-calendar');
   const [events, setEvents] = useState<EconomicEvent[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<EconomicEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string>('today');
+  const [activeFilter, setActiveFilter] = useState<CalendarFilterKey>('today');
+  const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
-  const filters = [
+  const filters: Array<{ key: CalendarFilterKey; value: string }> = [
     { key: 'today', value: t('filters.today') },
     { key: 'thisWeek', value: t('filters.thisWeek') },
     { key: 'previousWeek', value: t('filters.previousWeek') },
@@ -34,10 +33,8 @@ export default function EconomicCalendar() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await fetchEconomicCalendar();
-        console.log('Data from API:', data); // Log data dari API
+        const data = await fetchEconomicCalendar(activeFilter);
         setEvents(data);
-        setFilteredEvents(data); // Set data awal ke filteredEvents
         setError(null);
       } catch (err) {
         console.error('Error loading economic calendar:', err);
@@ -48,75 +45,15 @@ export default function EconomicCalendar() {
     };
 
     fetchData();
-  }, []);
+  }, [activeFilter]);
 
-  useEffect(() => {
-    if (events.length === 0) return;
-
-    console.log('Applying filter:', activeFilter); // Log filter aktif
-    const now = new Date();
-    let filtered: EconomicEvent[] = [];
-
-    // Fungsi untuk memeriksa apakah tanggal event sesuai dengan filter
-    const getEventDate = (event: EconomicEvent) => {
-      try {
-        // Buat tanggal dalam format YYYY-MM-DDTHH:mm
-        const dateTimeString = `${event.date}T${event.time}`;
-        const eventDate = new Date(dateTimeString);
-        
-        // Validasi tanggal
-        if (isNaN(eventDate.getTime())) {
-          console.error('Invalid date/time:', event.date, event.time);
-          return new Date(); // Kembalikan tanggal sekarang sebagai fallback
-        }
-        
-        console.log('Event:', event.figures, 'Date:', eventDate);
-        return eventDate;
-      } catch (error) {
-        console.error('Error parsing date:', error, event);
-        return new Date(); // Kembalikan tanggal sekarang sebagai fallback
-      }
-    };
-
-    switch (activeFilter) {
-      case 'today':
-        filtered = events.filter(event => {
-          const eventDate = getEventDate(event);
-          const isTodayEvent = isToday(eventDate);
-          console.log('Event date:', eventDate, 'isToday:', isTodayEvent);
-          return isTodayEvent;
-        });
-        break;
-      case 'thisWeek':
-        filtered = events.filter(event => {
-          const eventDate = getEventDate(event);
-          return isThisWeek(eventDate, { weekStartsOn: 1 });
-        });
-        break;
-      case 'previousWeek':
-        const lastWeek = addDays(now, -7);
-        filtered = events.filter(event => {
-          const eventDate = getEventDate(event);
-          return isSameWeek(eventDate, lastWeek, { weekStartsOn: 1 });
-        });
-        break;
-      case 'nextWeek':
-        const nextWeek = addDays(now, 7);
-        filtered = events.filter(event => {
-          const eventDate = getEventDate(event);
-          return isSameWeek(eventDate, nextWeek, { weekStartsOn: 1 });
-        });
-        break;
-      default:
-        filtered = [...events]; // Buat salinan baru dari array events
-    }
-
-    console.log('Filtered events:', filtered); // Log hasil filter
-    setFilteredEvents(filtered);
-  }, [activeFilter, events]);
-
-  const handleFilterClick = (filterKey: string) => {
+  const handleFilterClick = (filterKey: CalendarFilterKey) => {
     setActiveFilter(filterKey);
+    setExpandedEventId(null);
+  };
+
+  const toggleExpanded = (eventId: string) => {
+    setExpandedEventId(prev => (prev === eventId ? null : eventId));
   };
 
   // Format tanggal dari YYYY-MM-DD ke DD-MM-YYYY
@@ -165,98 +102,6 @@ export default function EconomicCalendar() {
     }
   };
   
-  // Tampilkan semua data jika tidak ada filter yang cocok
-  if (filteredEvents.length === 0 && events.length > 0) {
-    console.log('No events match the current filter. Showing all events.');
-    return (
-      <PageTemplate title={t('title')}>
-        <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
-          <ProfilContainer title={t('title')}>
-            <div className="space-y-5">
-              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-yellow-700">
-                      {t('noDataMessage')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Tampilkan semua data */}
-              <div className="overflow-hidden rounded-lg border border-[#E5E7EB] shadow-sm">
-                <table className="min-w-full divide-y divide-[#E5E7EB]">
-                  <thead className="bg-[#4C4C4C]">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        {t('table.date')}
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        {t('table.time')}
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        {t('table.country')}
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        {t('table.impact')}
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        {t('table.figures')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-[#E5E7EB]">
-                    {events.map((event) => (
-                      <tr key={event.id} className="hover:bg-[#FFF9F0] transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C] font-medium">
-                          {formatDate(event.date)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C]">
-                          {event.time}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs rounded-full bg-[#F5F5F5] text-[#4C4C4C]">
-                            {event.country}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {formatImpact(event.impact)}
-                        </td>
-                        <td className="px-6 py-4 text-sm">
-                          <div className="font-medium text-[#4C4C4C]">{event.figures}</div>
-                          {event.actual && (
-                            <div className="text-xs text-[#9B9FA7] mt-1">
-                              <span className="font-medium">{t('table.actual')}:</span> {event.actual}
-                            </div>
-                          )}
-                          {event.forecast && (
-                            <div className="text-xs text-[#9B9FA7]">
-                              <span className="font-medium">{t('table.forecast')}:</span> {event.forecast}
-                            </div>
-                          )}
-                          {event.previous && (
-                            <div className="text-xs text-[#9B9FA7]">
-                              <span className="font-medium">{t('table.previous')}:</span> {event.previous}
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </ProfilContainer>
-        </div>
-      </PageTemplate>
-    );
-  }
-
   return (
     <PageTemplate title={t('title')}>
       <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-52 my-10">
@@ -296,6 +141,28 @@ export default function EconomicCalendar() {
                   </div>
                 </div>
               </div>
+            ) : events.length === 0 ? (
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-yellow-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-700">{t('noDataMessage')}</p>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="overflow-hidden rounded-lg border border-[#E5E7EB] shadow-sm">
                 <table className="min-w-full divide-y divide-[#E5E7EB]">
@@ -319,42 +186,159 @@ export default function EconomicCalendar() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-[#E5E7EB]">
-                    {filteredEvents.map((event) => (
-                      <tr key={event.id} className="hover:bg-[#FFF9F0] transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C] font-medium">
-                          {formatDate(event.date)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C]">
-                          {event.time}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs rounded-full bg-[#F5F5F5] text-[#4C4C4C]">
-                            {event.country}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {formatImpact(event.impact)}
-                        </td>
-                        <td className="px-6 py-4 text-sm">
-                          <div className="font-medium text-[#4C4C4C]">{event.figures}</div>
-                          {event.actual && (
-                            <div className="text-xs text-[#9B9FA7] mt-1">
-                              <span className="font-medium">{t('table.actual')}:</span> {event.actual}
-                            </div>
-                          )}
-                          {event.forecast && (
-                            <div className="text-xs text-[#9B9FA7]">
-                              <span className="font-medium">{t('table.forecast')}:</span> {event.forecast}
-                            </div>
-                          )}
-                          {event.previous && (
-                            <div className="text-xs text-[#9B9FA7]">
-                              <span className="font-medium">{t('table.previous')}:</span> {event.previous}
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                    {events.map((event) => {
+                      const isExpanded = expandedEventId === event.id;
+                      const hasDetails =
+                        !!event.details &&
+                        Object.values(event.details).some(v => (Array.isArray(v) ? v.length > 0 : !!v));
+
+                      return (
+                        <React.Fragment key={event.id}>
+                          <tr
+                            className="hover:bg-[#FFF9F0] transition-colors cursor-pointer"
+                            onClick={() => toggleExpanded(event.id)}
+                            role="button"
+                            aria-expanded={isExpanded}
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C] font-medium">
+                              {formatDate(event.date)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4C4C4C]">{event.time}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 py-1 text-xs rounded-full bg-[#F5F5F5] text-[#4C4C4C]">
+                                {event.country}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm">{formatImpact(event.impact)}</td>
+                            <td className="px-6 py-4 text-sm">
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <div className="font-medium text-[#4C4C4C]">{event.figures}</div>
+                                  {event.actual && (
+                                    <div className="text-xs text-[#9B9FA7] mt-1">
+                                      <span className="font-medium">{t('table.actual')}:</span> {event.actual}
+                                    </div>
+                                  )}
+                                  {event.forecast && (
+                                    <div className="text-xs text-[#9B9FA7]">
+                                      <span className="font-medium">{t('table.forecast')}:</span> {event.forecast}
+                                    </div>
+                                  )}
+                                  {event.previous && (
+                                    <div className="text-xs text-[#9B9FA7]">
+                                      <span className="font-medium">{t('table.previous')}:</span> {event.previous}
+                                    </div>
+                                  )}
+                                </div>
+                                {hasDetails ? (
+                                  <button
+                                    type="button"
+                                    className="shrink-0 text-xs text-[#F2AC59] hover:underline"
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      toggleExpanded(event.id);
+                                    }}
+                                  >
+                                    {isExpanded ? 'Tutup Detail' : 'Lihat Detail'}
+                                  </button>
+                                ) : null}
+                              </div>
+                            </td>
+                          </tr>
+
+                          {isExpanded && hasDetails ? (
+                            <tr className="bg-[#FFF9F0]">
+                              <td colSpan={5} className="px-6 py-4 text-sm text-[#4C4C4C]">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div className="space-y-2">
+                                    {event.details?.sources ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Sources</div>
+                                        <div className="text-sm">{event.details.sources}</div>
+                                      </div>
+                                    ) : null}
+                                    {event.details?.measures ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Measures</div>
+                                        <div className="text-sm">{event.details.measures}</div>
+                                      </div>
+                                    ) : null}
+                                    {event.details?.usualEffect ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Usual Effect</div>
+                                        <div className="text-sm">{event.details.usualEffect}</div>
+                                      </div>
+                                    ) : null}
+                                  </div>
+
+                                  <div className="space-y-2">
+                                    {event.details?.frequency ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Frequency</div>
+                                        <div className="text-sm">{event.details.frequency}</div>
+                                      </div>
+                                    ) : null}
+                                    {event.details?.nextReleased ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Next Released</div>
+                                        <div className="text-sm">{event.details.nextReleased}</div>
+                                      </div>
+                                    ) : null}
+                                    {event.details?.notes ? (
+                                      <div>
+                                        <div className="text-xs font-semibold text-[#6B7280]">Notes</div>
+                                        <div className="text-sm">{event.details.notes}</div>
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                </div>
+
+                                {event.details?.whyTraderCare ? (
+                                  <div className="mt-4">
+                                    <div className="text-xs font-semibold text-[#6B7280]">Why Trader Care</div>
+                                    <div className="text-sm">{event.details.whyTraderCare}</div>
+                                  </div>
+                                ) : null}
+
+                                {Array.isArray(event.details?.history) && event.details!.history!.length > 0 ? (
+                                  <div className="mt-4">
+                                    <div className="text-xs font-semibold text-[#6B7280] mb-2">History</div>
+                                    <div className="overflow-x-auto">
+                                      <table className="min-w-full text-xs border border-[#E5E7EB] rounded">
+                                        <thead className="bg-white">
+                                          <tr className="text-left">
+                                            <th className="px-3 py-2 border-b border-[#E5E7EB]">Date</th>
+                                            <th className="px-3 py-2 border-b border-[#E5E7EB]">Actual</th>
+                                            <th className="px-3 py-2 border-b border-[#E5E7EB]">Forecast</th>
+                                            <th className="px-3 py-2 border-b border-[#E5E7EB]">Previous</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {event.details!.history!.slice(0, 10).map((h, idx) => (
+                                            <tr key={`${event.id}:h:${idx}`} className="bg-white">
+                                              <td className="px-3 py-2 border-b border-[#E5E7EB] whitespace-nowrap">
+                                                {h.date || '-'}
+                                              </td>
+                                              <td className="px-3 py-2 border-b border-[#E5E7EB]">{h.actual ?? '-'}</td>
+                                              <td className="px-3 py-2 border-b border-[#E5E7EB]">
+                                                {h.forecast ?? '-'}
+                                              </td>
+                                              <td className="px-3 py-2 border-b border-[#E5E7EB]">
+                                                {h.previous ?? '-'}
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                ) : null}
+                              </td>
+                            </tr>
+                          ) : null}
+                        </React.Fragment>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

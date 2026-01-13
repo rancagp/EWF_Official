@@ -1,57 +1,155 @@
-const API_BASE_URL = 'https://portalnews.newsmaker.id/api/v1/kalender-ekonomi';
-const API_TOKEN = 'EWF-06433b884f930161';
+const API_BASE_URL = 'https://endpoapi-production-3202.up.railway.app/api/calendar';
 
-const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const headers = new Headers(options.headers || {});
-  headers.set('Authorization', `Bearer ${API_TOKEN}`);
-  headers.set('Accept', 'application/json');
-  
+export type CalendarFilterKey = 'today' | 'thisWeek' | 'nextWeek' | 'previousWeek';
+
+const ENDPOINT_BY_FILTER: Record<CalendarFilterKey, string> = {
+  today: `${API_BASE_URL}/today`,
+  thisWeek: `${API_BASE_URL}/this-week`,
+  nextWeek: `${API_BASE_URL}/next-week`,
+  previousWeek: `${API_BASE_URL}/previous-week`,
+};
+
+const fetchJson = async (url: string, options: RequestInit = {}) => {
   const response = await fetch(url, {
     ...options,
-    headers,
-    cache: 'no-store' as const
+    headers: {
+      Accept: 'application/json',
+      ...(options.headers || {}),
+    },
+    cache: 'no-store' as const,
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} on ${url}`);
   }
-  
+
   return response.json();
 };
 
 export interface EconomicEvent {
-  id: number;
-  sources: string;
-  measures: string;
-  usual_effect: string;
-  frequency: string;
-  next_released: string;
-  notes: string | null;
-  why_trader_care: string | null;
-  date: string;
+  id: string;
+  date: string; // YYYY-MM-DD
   time: string;
   country: string;
-  impact: 'High' | 'Medium' | 'Low';
+  impact: 'High' | 'Medium' | 'Low' | '';
   figures: string;
-  previous: string;
-  forecast: string;
-  actual: string;
-  created_at: string;
-  updated_at: string;
+  previous?: string;
+  forecast?: string;
+  actual?: string;
+  details?: {
+    sources?: string;
+    measures?: string;
+    usualEffect?: string;
+    frequency?: string;
+    nextReleased?: string;
+    notes?: string | null;
+    whyTraderCare?: string | null;
+    history?: Array<{
+      date?: string;
+      previous?: string;
+      forecast?: string;
+      actual?: string;
+    }>;
+  };
 }
 
-export interface ApiResponse {
+type RemoteCalendarItem = {
+  time?: string;
+  date?: string;
+  currency?: string;
+  impact?: string;
+  event?: string;
+  previous?: string;
+  forecast?: string;
+  actual?: string;
+  details?: {
+    sources?: string;
+    measures?: string;
+    usualEffect?: string;
+    frequency?: string;
+    nextReleased?: string;
+    notes?: string | null;
+    whyTraderCare?: string | null;
+    history?: Array<{
+      date?: string;
+      previous?: string;
+      forecast?: string;
+      actual?: string;
+    }>;
+  };
+};
+
+type RemoteCalendarResponse = {
   status: string;
-  data: EconomicEvent[];
-}
+  updatedAt?: string;
+  total?: number;
+  data?: RemoteCalendarItem[];
+};
 
-export const fetchEconomicCalendar = async (): Promise<EconomicEvent[]> => {
+const normalizeImpact = (rawImpact: string | undefined): EconomicEvent['impact'] => {
+  if (!rawImpact) return '';
+
+  const lowered = rawImpact.toLowerCase();
+  if (lowered.includes('high')) return 'High';
+  if (lowered.includes('medium')) return 'Medium';
+  if (lowered.includes('low')) return 'Low';
+
+  const starCount = (rawImpact.match(/★/g) || []).length;
+  const questionCount = (rawImpact.match(/\?/g) || []).length;
+  const level = starCount || questionCount;
+
+  if (level >= 3) return 'High';
+  if (level === 2) return 'Medium';
+  if (level === 1) return 'Low';
+  return '';
+};
+
+const normalizeTime = (rawTime: string | undefined) => {
+  if (!rawTime) return '';
+  // API sometimes returns `YYYY-MM-DD HH.mm` in `time`
+  const parts = rawTime.trim().split(/\s+/);
+  return parts.length >= 2 ? parts[parts.length - 1] : rawTime.trim();
+};
+
+const ymdFromUpdatedAt = (updatedAt: string | undefined) => {
+  if (!updatedAt) return '';
+  const match = updatedAt.match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : '';
+};
+
+export const fetchEconomicCalendar = async (filter: CalendarFilterKey): Promise<EconomicEvent[]> => {
   try {
-    const data = await fetchWithAuth(API_BASE_URL);
-    if (data.status === 'success') {
-      return data.data;
+    const url = ENDPOINT_BY_FILTER[filter];
+    const response = (await fetchJson(url)) as RemoteCalendarResponse;
+
+    if (response.status !== 'success') {
+      throw new Error('Gagal mengambil data kalender ekonomi');
     }
-    throw new Error('Gagal mengambil data kalender ekonomi');
+
+    const items = Array.isArray(response.data) ? response.data : [];
+    const fallbackDate =
+      filter === 'today' ? ymdFromUpdatedAt(response.updatedAt) || new Date().toISOString().slice(0, 10) : '';
+
+    return items.map((item, index) => {
+      const date = item.date || fallbackDate;
+      const time = normalizeTime(item.time);
+      const country = item.currency || '';
+      const figures = item.event || '';
+      const impact = normalizeImpact(item.impact);
+
+      return {
+        id: `${filter}:${date}:${time}:${country}:${figures}:${index}`,
+        date,
+        time,
+        country,
+        impact,
+        figures,
+        previous: item.previous,
+        forecast: item.forecast,
+        actual: item.actual,
+        details: item.details,
+      };
+    });
   } catch (error) {
     console.error('Error fetching economic calendar:', error);
     throw error;
