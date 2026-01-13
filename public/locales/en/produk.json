@@ -12,6 +12,8 @@
     "description": "Track real-time market movements from the homepage, now available as a dedicated page.",
     "pageTitle": "Live Market Quotes",
     "pageSubtitle": "Real-time price updates for the latest financial instruments.",
+    "chartTitle": "XAUUSD Chart (TradingView)",
+    "chartSubtitle": "Interactive chart to monitor price movement visually.",
     "backToSpa": "Back to SPA Products",
     "backToHome": "Back to Home"
   },
