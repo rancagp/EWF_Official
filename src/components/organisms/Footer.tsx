@@ -71,7 +71,7 @@ const Footer = () => {
     const legal = t('legal', 'Legalitas');
     const headOffice = t('headOffice', 'Kantor Pusat');
     const address = t('address', 'Sahid Sudirman Center Lt. 9 Unit C,D,G,H & Lt. 21 Unit A Jl. Jend. Sudirman No.86, Jakarta Pusat 10220');
-    const komdigiDesc = t('komdigiDesc', 'Terdaftar dan diawasi oleh Kementerian Komunikasi dan Informatika Republik Indonesia');
+    const komdigiDesc = t('komdigiDesc', 'Terdaftar dan diawasi oleh Kementerian Komunikasi dan Digital Republik Indonesia');
     const isoDesc = t('isoDesc', 'Bersertifikat ISO 9001:2015');
     const copyright = t('copyright', '&copy; {{year}} PT. Equityworld Futures. All rights reserved.');
     const termsConditions = t('termsConditions', 'Syarat & Ketentuan');
