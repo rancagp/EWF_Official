@@ -145,7 +145,7 @@ export default function HistoricalDataContent() {
                 setApiData(response.data);
                 
                 // Transform API data to match the expected format
-                const hiddenInstruments = new Set(['LSI Daily']);
+                const hiddenInstruments = new Set(['LSI Daily', 'LSI']);
                 const transformedData = transformData(response.data).filter((item) => !hiddenInstruments.has(item.category));
                 
                 // Sort data by date (newest first)
@@ -285,44 +285,153 @@ export default function HistoricalDataContent() {
         setCurrentPage(1);
     };
 
-    const handleDownload = (filtered = false) => {
+	    const handleDownload = (filtered = false) => {
+	        try {
+	            const dataToDownload = filtered ? [...filteredData] : [...dataHistorical].slice(-30);
+	            if (dataToDownload.length === 0) {
+	                throw new Error('Tidak ada data yang tersedia untuk diunduh');
+	            }
+	            const includeChangeAndVolume = selectedInstrument !== 'SNI Daily';
+
+	            // Create CSV header and rows
+	            const header = includeChangeAndVolume
+	                ? `${t('table.date')},${t('table.symbol')},${t('table.open')},${t('table.high')},${t('table.low')},${t('table.close')},${t('table.change')},${t('table.volume')}\n`
+	                : `${t('table.date')},${t('table.symbol')},${t('table.open')},${t('table.high')},${t('table.low')},${t('table.close')}\n`;
+
+	            const rows = dataToDownload
+	                .map((row: HistoricalData) => {
+	                    // Format values, handling null/undefined
+	                    const formatValue = (value: any) => value !== null && value !== undefined ? value : '';
+	                    const base = [
+	                        formatDate(row.date),
+	                        `"${row.symbol}"`,
+	                        formatValue(row.open),
+	                        formatValue(row.high),
+	                        formatValue(row.low),
+	                        formatValue(row.close)
+	                    ];
+
+	                    if (includeChangeAndVolume) {
+	                        base.push(formatValue(row.change), formatValue(row.volume));
+	                    }
+
+	                    return base.join(',');
+	                })
+	                .join('\n');
+
+	            const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
+	            const url = URL.createObjectURL(blob);
+	            const link = document.createElement("a");
+	            link.href = url;
+	            link.download = `historical-data-${new Date().toISOString().split('T')[0]}.csv`;
+	            document.body.appendChild(link);
+	            link.click();
+	            document.body.removeChild(link);
+	            URL.revokeObjectURL(url);
+	        } catch (err) {
+	            console.error('Error downloading data:', err);
+	            setError('Gagal mengunduh data. ' + (err instanceof Error ? err.message : ''));
+	        }
+	    };
+
+    const handleDownloadPdf = async (filtered = false) => {
         try {
-            const dataToDownload = filtered ? [...filteredData] : [...dataHistorical].slice(-30);
+            const dataToDownload = [...currentItems];
             if (dataToDownload.length === 0) {
                 throw new Error('Tidak ada data yang tersedia untuk diunduh');
             }
-            
-            // Create CSV header and rows
-            const header = `${t('table.date')},${t('table.symbol')},${t('table.open')},${t('table.high')},${t('table.low')},${t('table.close')},${t('table.change')},${t('table.volume')}\n`;
-            
-            const rows = dataToDownload.map((row: HistoricalData) => {
-                // Format values, handling null/undefined
-                const formatValue = (value: any) => value !== null && value !== undefined ? value : '';
-                
-                return [
-                    formatDate(row.date),
-                    `"${row.symbol}"`,
-                    formatValue(row.open),
-                    formatValue(row.high),
-                    formatValue(row.low),
-                    formatValue(row.close),
-                    formatValue(row.change),
-                    formatValue(row.volume)
-                ].join(',');
-            }).join('\n');
 
-            const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `historical-data-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            const [{ jsPDF }, autoTableModule] = await Promise.all([
+                import('jspdf'),
+                import('jspdf-autotable')
+            ]);
+            const autoTable = (autoTableModule as any).default as (doc: any, options: any) => void;
+
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            doc.setFontSize(14);
+            doc.text('Data Historis', 40, 32);
+            doc.setFontSize(10);
+            doc.text(`Instrument: ${selectedInstrument || '-'}`, 40, 48);
+            doc.text(`Halaman: ${currentPage}`, 40, 62);
+
+            const getLogoDataUrl = async (): Promise<string | null> => {
+                try {
+                    const res = await fetch('/assets/ewf-logo.png', { cache: 'force-cache' });
+                    if (!res.ok) return null;
+                    const blob = await res.blob();
+                    return await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(String(reader.result));
+                        reader.onerror = () => reject(new Error('Failed to read watermark image'));
+                        reader.readAsDataURL(blob);
+                    });
+                } catch {
+                    return null;
+                }
+            };
+
+            const logoDataUrl = await getLogoDataUrl();
+            const watermarkOpacity = 0.08;
+            const drawWatermark = () => {
+                if (!logoDataUrl) return;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                let width = pageWidth * 0.5;
+                let height = width;
+                try {
+                    const props = doc.getImageProperties(logoDataUrl);
+                    const ratio = props.width / props.height;
+                    height = width / ratio;
+                    if (height > pageHeight * 0.6) {
+                        height = pageHeight * 0.6;
+                        width = height * ratio;
+                    }
+                } catch {
+                    // Fallback to square sizing if image properties aren't available
+                }
+
+                const x = (pageWidth - width) / 2;
+                const y = (pageHeight - height) / 2;
+
+                const GState = (doc as any).GState;
+                if (GState) {
+                    const gs = new GState({ opacity: watermarkOpacity });
+                    (doc as any).setGState(gs);
+                }
+                doc.addImage(logoDataUrl, 'PNG', x, y, width, height, undefined, 'FAST');
+                if (GState) {
+                    const gs = new GState({ opacity: 1 });
+                    (doc as any).setGState(gs);
+                }
+            };
+
+            const head = [['Tanggal', 'Symbol', 'Open', 'High', 'Low', 'Close']];
+            const body = dataToDownload.map((row) => [
+                formatDate(row.date),
+                row.symbol,
+                row.open ?? '',
+                row.high ?? '',
+                row.low ?? '',
+                row.close ?? ''
+            ]);
+
+            autoTable(doc, {
+                startY: 76,
+                head,
+                body,
+                theme: 'grid',
+                styles: { fontSize: 9, cellPadding: 6 },
+                headStyles: { fillColor: [76, 76, 76], textColor: 255 },
+                willDrawPage: () => {
+                    drawWatermark();
+                }
+            });
+
+            doc.save(`historical-data-${new Date().toISOString().split('T')[0]}.pdf`);
         } catch (err) {
-            console.error('Error downloading data:', err);
-            setError('Gagal mengunduh data. ' + (err instanceof Error ? err.message : ''));
+            console.error('Error downloading PDF:', err);
+            setError('Gagal mengunduh PDF. ' + (err instanceof Error ? err.message : ''));
         }
     };
 
@@ -395,8 +504,8 @@ export default function HistoricalDataContent() {
                     </div>
                 </div>
 
-                {/* Download Button - Pushed to right */}
-                <div className="flex justify-end">
+                {/* Download Buttons - Pushed to right */}
+                <div className="flex justify-end gap-2">
                     <button
                         onClick={() => handleDownload(true)}
                         disabled={isLoading || filteredData.length === 0}
@@ -404,6 +513,14 @@ export default function HistoricalDataContent() {
                     >
                         <FiDownload className="w-3.5 h-3.5" />
                         {t('actions.downloadAll')}
+                    </button>
+                    <button
+                        onClick={() => handleDownloadPdf(true)}
+                        disabled={isLoading || filteredData.length === 0}
+                        className="px-3 py-1.5 bg-[#F2AC59] text-white rounded-md hover:bg-[#E09B4A] transition-colors text-xs md:text-sm whitespace-nowrap w-full md:w-auto flex items-center gap-1.5 justify-center"
+                    >
+                        <FiDownload className="w-3.5 h-3.5" />
+                        Unduh PDF
                     </button>
                 </div>
             </div>
@@ -422,8 +539,16 @@ export default function HistoricalDataContent() {
                 </div>
             ) : (
                 /* Data Table */
-                <div className="bg-white rounded-lg shadow-sm border border-[#E5E7EB] overflow-hidden">
-                    <div className="overflow-x-auto">
+                <div className="relative bg-white rounded-lg shadow-sm border border-[#E5E7EB] overflow-hidden">
+                    <div className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center">
+                        <img
+                            src="/assets/ewf-logo.png"
+                            alt=""
+                            aria-hidden="true"
+                            className="w-56 opacity-[0.07] select-none md:w-96"
+                        />
+                    </div>
+                    <div className="relative z-10 overflow-x-auto">
                         <table className="min-w-full divide-y divide-[#E5E7EB]">
                             <thead className="bg-[#4C4C4C]">
                                 <tr>
@@ -439,22 +564,12 @@ export default function HistoricalDataContent() {
                                     <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                                         Low
                                     </th>
-                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                        Close
-                                    </th>
-                                    {selectedInstrument === 'SNI Daily' && (
-                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                            Change
-                                        </th>
-                                    )}
-                                    {selectedInstrument === 'SNI Daily' && (
-                                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                                            Volume
-                                        </th>
-                                    )}
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-[#E5E7EB]">
+	                                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+	                                        Close
+	                                    </th>
+	                                </tr>
+	                            </thead>
+	                            <tbody className="bg-white divide-y divide-[#E5E7EB]">
                                 {currentItems.map((item, index) => (
                                     <tr key={`${item.id}-${index}`} className={index % 2 === 0 ? 'bg-white' : 'bg-[#F9FAFB] hover:bg-[#FFF9F5]'}>
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
@@ -469,23 +584,13 @@ export default function HistoricalDataContent() {
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
                                             {item.low}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
-                                            {item.close}
-                                        </td>
-                                        {selectedInstrument === 'SNI Daily' && (
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
-                                                {item.change}
-                                            </td>
-                                        )}
-                                        {selectedInstrument === 'SNI Daily' && (
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
-                                                {item.volume ? item.volume.toLocaleString() : '-'}
-                                            </td>
-                                        )}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+	                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-[#4C4C4C]">
+	                                            {item.close}
+	                                        </td>
+	                                    </tr>
+	                                ))}
+	                            </tbody>
+	                        </table>
                     </div>
 
                     {/* Pagination */}
