@@ -348,11 +348,19 @@ export default function HistoricalDataContent() {
             const autoTable = (autoTableModule as any).default as (doc: any, options: any) => void;
 
             const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-            doc.setFontSize(14);
-            doc.text('Data Historis', 40, 32);
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+
+            doc.setFontSize(16);
+            doc.setTextColor(76, 76, 76);
+            doc.text('Data Historis', pageWidth / 2, 32, { align: 'center' });
+
             doc.setFontSize(10);
-            doc.text(`Instrument: ${selectedInstrument || '-'}`, 40, 48);
-            doc.text(`Halaman: ${currentPage}`, 40, 62);
+            doc.text(`Instrument: ${selectedInstrument || '-'}`, 40, 52);
+            const rangeText = fromDate || toDate ? `Periode: ${fromDate || '-'} s/d ${toDate || '-'}` : '';
+            if (rangeText) {
+                doc.text(rangeText, 40, 66);
+            }
 
             const getLogoDataUrl = async (): Promise<string | null> => {
                 try {
@@ -371,13 +379,10 @@ export default function HistoricalDataContent() {
             };
 
             const logoDataUrl = await getLogoDataUrl();
-            const watermarkOpacity = 0.08;
+            const watermarkOpacity = 0.07;
             const drawWatermark = () => {
                 if (!logoDataUrl) return;
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
-
-                let width = pageWidth * 0.5;
+                let width = pageWidth * 0.55;
                 let height = width;
                 try {
                     const props = doc.getImageProperties(logoDataUrl);
@@ -406,10 +411,9 @@ export default function HistoricalDataContent() {
                 }
             };
 
-            const head = [['Tanggal', 'Symbol', 'Open', 'High', 'Low', 'Close']];
+            const head = [['Tanggal', 'Open', 'High', 'Low', 'Close']];
             const body = dataToDownload.map((row) => [
                 formatDate(row.date),
-                row.symbol,
                 row.open ?? '',
                 row.high ?? '',
                 row.low ?? '',
@@ -417,14 +421,29 @@ export default function HistoricalDataContent() {
             ]);
 
             autoTable(doc, {
-                startY: 76,
+                startY: rangeText ? 86 : 76,
                 head,
                 body,
                 theme: 'grid',
-                styles: { fontSize: 9, cellPadding: 6 },
-                headStyles: { fillColor: [76, 76, 76], textColor: 255 },
+                styles: { fontSize: 10, cellPadding: 8, textColor: [76, 76, 76] },
+                headStyles: { fillColor: [76, 76, 76], textColor: 255, halign: 'left' },
+                alternateRowStyles: { fillColor: [249, 250, 251] },
+                columnStyles: {
+                    0: { halign: 'left' },
+                    1: { halign: 'right' },
+                    2: { halign: 'right' },
+                    3: { halign: 'right' },
+                    4: { halign: 'right' }
+                },
                 willDrawPage: () => {
                     drawWatermark();
+                    doc.setFontSize(9);
+                    doc.setTextColor(120, 120, 120);
+                    const footerLeft = `Generated: ${new Date().toLocaleString('id-ID')}`;
+                    const footerRight = `Halaman ${currentPage}`;
+                    doc.text(footerLeft, 40, pageHeight - 24);
+                    doc.text(footerRight, pageWidth - 40, pageHeight - 24, { align: 'right' });
+                    doc.setTextColor(76, 76, 76);
                 }
             });
 

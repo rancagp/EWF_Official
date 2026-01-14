@@ -22,18 +22,28 @@ export default function NewsCard2({ date, title, content, link, image, category,
     const displayCategory = category || defaultCategory;
     
     // Format date based on current locale
-    const formatDate = (inputDate: string) => {
+    const formatReleaseDateTime = (inputDate: string) => {
         if (!inputDate) return '';
         
-        const options: Intl.DateTimeFormatOptions = {
+        const dateOptions: Intl.DateTimeFormatOptions = {
             day: '2-digit',
             month: 'long',
             year: 'numeric',
+            timeZone: 'Asia/Jakarta',
+        };
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Jakarta',
         };
         
         try {
             const parsedDate = new Date(inputDate);
-            return parsedDate.toLocaleDateString(locale || 'id-ID', options);
+            const localeName = locale || 'id-ID';
+            const datePart = parsedDate.toLocaleDateString(localeName, dateOptions);
+            const timePart = parsedDate.toLocaleTimeString(localeName, timeOptions);
+            return `${datePart} • ${timePart} WIB`;
         } catch (e) {
             console.error('Invalid date format:', inputDate);
             return '';
@@ -58,7 +68,7 @@ export default function NewsCard2({ date, title, content, link, image, category,
         target.src = `data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%23EEEEEE%22%2F%3E%3Ctext%20x%3D%22400%22%20y%3D%22220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-size%3D%2220%22%20text-anchor%3D%22middle%22%20fill%3D%22%23AAAAAA%22%3E${encodeURIComponent(noImageText)}%3C%2Ftext%3E%3C%2Fsvg%3E`;
     };
 
-    const formattedDate = formatDate(date);
+    const formattedDate = formatReleaseDateTime(date);
     const cleanContent = stripHtml(content);
     const truncatedContent = truncate(cleanContent, 150);
     const truncatedTitle = truncate(stripHtml(title), 70);

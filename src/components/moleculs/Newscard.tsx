@@ -36,19 +36,28 @@ export default function NewsCard({
         return plainText.length > maxChars ? plainText.slice(0, maxChars).trim() + "..." : plainText;
     }
 
-    const formatDate = (inputDate: string) => {
+    const formatReleaseDateTime = (inputDate: string) => {
         try {
             const parsedDate = new Date(inputDate);
             // Periksa apakah tanggal valid
             if (isNaN(parsedDate.getTime())) {
                 return inputDate; // Kembalikan nilai asli jika tidak valid
             }
-            const options: Intl.DateTimeFormatOptions = {
+            const dateOptions: Intl.DateTimeFormatOptions = {
                 day: "2-digit",
                 month: "long",
                 year: "numeric",
+                timeZone: "Asia/Jakarta",
             };
-            return parsedDate.toLocaleDateString("id-ID", options);
+            const timeOptions: Intl.DateTimeFormatOptions = {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+                timeZone: "Asia/Jakarta",
+            };
+            const datePart = parsedDate.toLocaleDateString("id-ID", dateOptions);
+            const timePart = parsedDate.toLocaleTimeString("id-ID", timeOptions);
+            return `${datePart} • ${timePart} WIB`;
         } catch (error) {
             console.error('Error formatting date:', error);
             return inputDate; // Kembalikan nilai asli jika terjadi error
@@ -163,7 +172,7 @@ export default function NewsCard({
                         )}
                     </div>
                     <div className={contentClasses[variant]}>
-                        <p className={dateClasses[variant]}>{formatDate(date)}</p>
+                        <p className={dateClasses[variant]}>{formatReleaseDateTime(date)}</p>
                         <h3 className={titleClasses[variant]}>{title}</h3>
                         <p className={excerptClasses[variant]}>{trimmedExcerpt}</p>
                     </div>

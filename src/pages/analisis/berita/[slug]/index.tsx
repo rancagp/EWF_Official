@@ -123,14 +123,21 @@ export default function BeritaDetail() {
         fetchRelatedBerita();
     }, [fetchRelatedBerita]);
 
-    const formatDate = (inputDate: string) => {
+    const formatReleaseDateTime = (inputDate: string) => {
         if (!inputDate) return '';
         
-        const options: Intl.DateTimeFormatOptions = {
+        const dateOptions: Intl.DateTimeFormatOptions = {
             weekday: "long",
             day: "2-digit",
             month: "long",
             year: "numeric",
+            timeZone: "Asia/Jakarta",
+        };
+        const timeOptions: Intl.DateTimeFormatOptions = {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+            timeZone: "Asia/Jakarta",
         };
         
         const language = i18n.language || router.locale || 'id';
@@ -141,7 +148,10 @@ export default function BeritaDetail() {
             return inputDate;
         }
         
-        return parsedDate.toLocaleDateString(language === 'en' ? 'en-US' : 'id-ID', options);
+        const localeName = language === 'en' ? 'en-US' : 'id-ID';
+        const datePart = parsedDate.toLocaleDateString(localeName, dateOptions);
+        const timePart = parsedDate.toLocaleTimeString(localeName, timeOptions);
+        return `${datePart} • ${timePart} WIB`;
     };
 
 
@@ -207,7 +217,7 @@ export default function BeritaDetail() {
                     </div>
                     <div className="prose max-w-none">
                         <div className="flex items-center text-gray-500 text-sm mb-6">
-                            <span>{formatDate(berita.created_at)}</span>
+                            <span>{formatReleaseDateTime(berita.created_at)}</span>
                             {berita.kategori?.name && (
                                 <span className="mx-2">•</span>
                             )}
@@ -320,7 +330,7 @@ export default function BeritaDetail() {
                                                             </div>
                                                         )}
                                                         <div className="text-xs text-gray-500">
-                                                            {formatDate(item.created_at)}
+                                                            {formatReleaseDateTime(item.created_at)}
                                                         </div>
                                                     </div>
                                                     <h4 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-[#F2AC59] transition-colors line-clamp-2" style={{
