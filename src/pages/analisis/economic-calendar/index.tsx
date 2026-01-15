@@ -21,6 +21,7 @@ export default function EconomicCalendar() {
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<CalendarFilterKey>('today');
   const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
+  const [downloadingPdf, setDownloadingPdf] = useState<boolean>(false);
 
   const filters: Array<{ key: CalendarFilterKey; value: string }> = [
     { key: 'today', value: t('filters.today') },
@@ -101,6 +102,150 @@ export default function EconomicCalendar() {
         return <span className="text-gray-300">★☆☆</span>;
     }
   };
+
+  const getImpactLabel = (impact: EconomicEvent['impact']) => {
+    const lowered = (impact || '').toLowerCase();
+    if (lowered === 'high' || lowered === 'medium' || lowered === 'low') {
+      return t(`impactLevels.${lowered}`);
+    }
+    return '-';
+  };
+
+  const getActiveFilterLabel = () => {
+    return filters.find(f => f.key === activeFilter)?.value || activeFilter;
+  };
+
+  const handleDownloadPdf = async () => {
+    if (downloadingPdf || loading || error || events.length === 0) return;
+
+    try {
+      setDownloadingPdf(true);
+
+      const [{ jsPDF }, autoTableModule] = await Promise.all([import('jspdf'), import('jspdf-autotable')]);
+      const autoTable = autoTableModule.default as unknown as (doc: any, options: any) => void;
+
+      const loadImageAsDataUrl = async (path: string) => {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Failed to load image (${response.status}): ${path}`);
+        const blob = await response.blob();
+
+        return await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('Failed to read image blob'));
+          reader.onload = () => resolve(String(reader.result));
+          reader.readAsDataURL(blob);
+        });
+      };
+
+      const getImageDimensions = async (dataUrl: string) => {
+        return await new Promise<{ width: number; height: number }>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () =>
+            resolve({
+              width: img.naturalWidth || img.width,
+              height: img.naturalHeight || img.height,
+            });
+          img.onerror = () => reject(new Error('Failed to decode image'));
+          img.src = dataUrl;
+        });
+      };
+
+      let watermarkLogo: { dataUrl: string; format: 'PNG' | 'JPEG'; width: number; height: number } | null = null;
+      try {
+        const dataUrl = await loadImageAsDataUrl('/assets/ewf-logo.png');
+        const format = dataUrl.startsWith('data:image/png') ? 'PNG' : 'JPEG';
+        const { width, height } = await getImageDimensions(dataUrl);
+        watermarkLogo = { dataUrl, format, width, height };
+      } catch (e) {
+        console.warn('PDF watermark logo not loaded, continuing without watermark:', e);
+      }
+
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+      const marginX = 40;
+
+      const drawWatermark = () => {
+        if (!watermarkLogo) return;
+
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const maxW = pageWidth * 0.42;
+        const maxH = pageHeight * 0.42;
+
+        const aspect = watermarkLogo.width / watermarkLogo.height || 1;
+        let w = maxW;
+        let h = w / aspect;
+        if (h > maxH) {
+          h = maxH;
+          w = h * aspect;
+        }
+
+        const x = (pageWidth - w) / 2;
+        const y = (pageHeight - h) / 2;
+
+        const watermarkState = doc.GState({ opacity: 0.07 });
+        const normalState = doc.GState({ opacity: 1 });
+        doc.setGState(watermarkState);
+        doc.addImage(watermarkLogo.dataUrl, watermarkLogo.format, x, y, w, h, undefined, 'FAST');
+        doc.setGState(normalState);
+      };
+
+      doc.setFontSize(18);
+      doc.text(t('title'), marginX, 42);
+
+      doc.setFontSize(11);
+      doc.setTextColor(90);
+      doc.text(`${t('pdf.filter')}: ${getActiveFilterLabel()}`, marginX, 62);
+      doc.text(`${t('pdf.generatedAt')}: ${new Date().toLocaleString()}`, marginX, 78);
+
+      const head = [
+        [
+          t('table.date'),
+          t('table.time'),
+          t('table.country'),
+          t('table.impact'),
+          t('table.figures'),
+          t('table.actual'),
+          t('table.forecast'),
+          t('table.previous'),
+        ],
+      ];
+
+      const body = events.map(event => [
+        formatDate(event.date),
+        event.time || '-',
+        event.country || '-',
+        getImpactLabel(event.impact),
+        event.figures || '-',
+        event.actual ?? '-',
+        event.forecast ?? '-',
+        event.previous ?? '-',
+      ]);
+
+      autoTable(doc, {
+        startY: 96,
+        head,
+        body,
+        theme: 'grid',
+        styles: { fontSize: 9, cellPadding: 4, overflow: 'linebreak' },
+        headStyles: { fillColor: [76, 76, 76], textColor: 255 },
+        columnStyles: {
+          4: { cellWidth: 260 },
+        },
+        margin: { left: marginX, right: marginX },
+        didDrawPage: () => {
+          drawWatermark();
+        },
+      });
+
+      const stamp = new Date().toISOString().slice(0, 10);
+      doc.save(`economic-calendar-${activeFilter}-${stamp}.pdf`);
+    } catch (err) {
+      console.error('Error generating economic calendar PDF:', err);
+      setError(t('pdf.error'));
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
   
   return (
     <PageTemplate title={t('title')}>
@@ -108,20 +253,35 @@ export default function EconomicCalendar() {
         <ProfilContainer title={t('title')}>
           <div className="space-y-5">
             {/* Filter Buttons */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {filters.map((filter) => (
-                <button
-                  key={filter.key}
-                  onClick={() => handleFilterClick(filter.key)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeFilter === filter.key
-                      ? 'bg-[#F2AC59] text-white shadow-md'
-                      : 'bg-[#F5F5F5] text-[#4C4C4C] hover:bg-[#E5E7EB]'
-                  }`}
-                >
-                  {filter.value}
-                </button>
-              ))}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+              <div className="flex flex-wrap gap-2">
+                {filters.map((filter) => (
+                  <button
+                    key={filter.key}
+                    onClick={() => handleFilterClick(filter.key)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                      activeFilter === filter.key
+                        ? 'bg-[#F2AC59] text-white shadow-md'
+                        : 'bg-[#F5F5F5] text-[#4C4C4C] hover:bg-[#E5E7EB]'
+                    }`}
+                  >
+                    {filter.value}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                disabled={loading || !!error || events.length === 0 || downloadingPdf}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors border ${
+                  loading || !!error || events.length === 0 || downloadingPdf
+                    ? 'bg-[#F5F5F5] text-[#9B9FA7] border-[#E5E7EB] cursor-not-allowed'
+                    : 'bg-white text-[#4C4C4C] border-[#F2AC59] hover:bg-[#FFF9F0]'
+                }`}
+              >
+                {downloadingPdf ? t('actions.downloadingPdf') : t('actions.downloadPdf')}
+              </button>
             </div>
 
             {loading ? (

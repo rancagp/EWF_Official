@@ -1,12 +1,23 @@
 {
   "title": "Kalender Ekonomi",
+  "noDataMessage": "Tidak ada data kalender ekonomi untuk periode ini.",
   "filters": {
     "today": "Hari Ini",
     "thisWeek": "Minggu Ini",
     "previousWeek": "Minggu Lalu",
     "nextWeek": "Minggu Depan"
   },
+  "actions": {
+    "downloadPdf": "Download PDF",
+    "downloadingPdf": "Membuat PDF..."
+  },
+  "pdf": {
+    "filter": "Filter",
+    "generatedAt": "Dibuat pada",
+    "error": "Gagal membuat PDF. Silakan coba lagi."
+  },
   "table": {
+    "date": "Tanggal",
     "time": "Waktu",
     "country": "Negara",
     "impact": "Dampak",

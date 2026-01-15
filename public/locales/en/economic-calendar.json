@@ -1,12 +1,23 @@
 {
   "title": "Economic Calendar",
+  "noDataMessage": "No economic calendar data for this period.",
   "filters": {
     "today": "Today",
     "thisWeek": "This Week",
     "previousWeek": "Previous Week",
     "nextWeek": "Next Week"
   },
+  "actions": {
+    "downloadPdf": "Download PDF",
+    "downloadingPdf": "Generating PDF..."
+  },
+  "pdf": {
+    "filter": "Filter",
+    "generatedAt": "Generated at",
+    "error": "Failed to generate PDF. Please try again."
+  },
   "table": {
+    "date": "Date",
     "time": "Time",
     "country": "Country",
     "impact": "Impact",

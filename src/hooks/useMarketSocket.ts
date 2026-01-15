@@ -7,6 +7,15 @@ export interface MarketItem {
   last: number;
   percentChange: number;
   direction?: Direction;
+  valueChange?: number;
+  high?: number;
+  low?: number;
+  open?: number;
+  prevClose?: number;
+  bid?: number;
+  ask?: number;
+  serverTime?: string;
+  serverDateTime?: string;
 }
 
 interface SocketState {
@@ -17,6 +26,19 @@ interface SocketState {
 
 const WS_URL = 'wss://wsprc.royalassetindo.co.id';
 const HIDDEN_SYMBOLS = new Set(['XAG10_BBJ', 'XAGF_BBJ']);
+
+const decimalsForSymbol = (symbol: string) => {
+  const upper = (symbol || '').toUpperCase();
+  if (upper.startsWith('HKK') || upper.startsWith('JPK')) return 0;
+  if (upper.startsWith('AU') || upper.startsWith('EU') || upper.startsWith('GU') || upper.startsWith('UC')) return 4;
+  return 2;
+};
+
+const roundTo = (value: number, decimals: number) => {
+  if (!Number.isFinite(value)) return 0;
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+};
 
 const toNumber = (value: unknown) => {
   const num = Number(value);
@@ -36,8 +58,25 @@ const stripPercent = (value: unknown) => {
 };
 
 const normalizeItem = (symbolKey: string, item: Record<string, unknown>): MarketItem => {
+  const symbol = String(item.symbol || item.Symbol || item.name || symbolKey || '');
+  const priceDecimals = decimalsForSymbol(symbol);
+
   const last = toNullableNumber(item.last ?? item.Last ?? item.price ?? item.buy ?? item.bid);
   const prevClose = toNullableNumber(item.prevClose ?? item.PrevClose ?? item.close ?? item.cprice);
+  const open = toNullableNumber(item.open ?? item.Open ?? item.o);
+  const high = toNullableNumber(item.high ?? item.High ?? item.h);
+  const low = toNullableNumber(item.low ?? item.Low ?? item.l);
+  const bid = toNullableNumber(item.bid ?? item.Bid);
+  const ask = toNullableNumber(item.ask ?? item.Ask);
+
+  const rawValueChange = toNullableNumber(
+    item.valueChange ??
+      item.change ??
+      item.value_change ??
+      item.diff ??
+      (last !== null && prevClose !== null ? last - prevClose : null)
+  );
+
   const rawPercent = toNullableNumber(
     stripPercent(
       item.percentChange ??
@@ -57,10 +96,31 @@ const normalizeItem = (symbolKey: string, item: Record<string, unknown>): Market
         ? ((last - prevClose) / prevClose) * 100
         : 0;
 
+  const serverTime =
+    (item.serverTime as string | undefined) ||
+    (item.time as string | undefined) ||
+    (item.ServerTime as string | undefined) ||
+    undefined;
+  const serverDateTime =
+    (item.serverDateTime as string | undefined) ||
+    (item.server_datetime as string | undefined) ||
+    (item.datetime as string | undefined) ||
+    (item.ServerDateTime as string | undefined) ||
+    undefined;
+
   return {
-    symbol: String(item.symbol || item.Symbol || item.name || symbolKey || ''),
-    last: toNumber(last),
-    percentChange: toNumber(computedPercent)
+    symbol,
+    last: roundTo(toNumber(last), priceDecimals),
+    high: high === null ? undefined : roundTo(toNumber(high), priceDecimals),
+    low: low === null ? undefined : roundTo(toNumber(low), priceDecimals),
+    open: open === null ? undefined : roundTo(toNumber(open), priceDecimals),
+    prevClose: prevClose === null ? undefined : roundTo(toNumber(prevClose), priceDecimals),
+    bid: bid === null ? undefined : roundTo(toNumber(bid), priceDecimals),
+    ask: ask === null ? undefined : roundTo(toNumber(ask), priceDecimals),
+    valueChange: rawValueChange === null ? undefined : roundTo(toNumber(rawValueChange), priceDecimals),
+    percentChange: roundTo(toNumber(computedPercent), 6),
+    serverTime,
+    serverDateTime
   };
 };
 

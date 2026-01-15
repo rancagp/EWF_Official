@@ -1,35 +1,35 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
+import { useMarketSocket, MarketItem as SocketMarketItem } from '@/hooks/useMarketSocket';
 
 type Direction = 'up' | 'down' | 'neutral';
 
-type MarketItem = {
-  symbol: string;
-  last: number;
-  percentChange: number;
-  direction?: Direction;
-  valueChange?: number;
-  high?: number;
-  low?: number;
-  open?: number;
-  prevClose?: number;
-  bid?: number;
-  ask?: number;
+type MarketItem = SocketMarketItem & {
   time?: string;
+  direction?: Direction;
+};
+
+const decimalsForSymbol = (symbol: string) => {
+  const upper = (symbol || '').toUpperCase();
+  if (upper.startsWith('HKK') || upper.startsWith('JPK')) return 0;
+  if (upper.startsWith('AU') || upper.startsWith('EU') || upper.startsWith('GU') || upper.startsWith('UC')) return 4;
+  return 2;
+};
+
+const roundTo = (value: number, decimals: number) => {
+  if (!Number.isFinite(value)) return 0;
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
 };
 
 function formatPrice(symbol: string, price: number | undefined): string {
   if (price === undefined || price === null || Number.isNaN(price)) return '-';
-  if (symbol?.includes('IDR')) return `Rp${price.toLocaleString('id-ID')}`;
-  if (symbol?.includes('USD')) return `$${price.toLocaleString('en-US')}`;
-  return price.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function formatTime(value: string | undefined): string {
-  if (!value) return '-';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '-';
-  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const digits = decimalsForSymbol(symbol);
+  const rounded = roundTo(price, digits);
+  const value = rounded.toFixed(digits); // no thousand separators + decimal separator is `.`
+  if (symbol?.includes('IDR')) return `Rp${value}`;
+  if (symbol?.includes('USD')) return `$${value}`;
+  return value;
 }
 
 export default function MarketTable() {
@@ -38,6 +38,7 @@ export default function MarketTable() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const prevDataRef = useRef<MarketItem[]>([]);
+  const socket = useMarketSocket();
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -53,19 +54,26 @@ export default function MarketTable() {
           throw new Error(t('invalidDataFormat'));
         }
 
-        const processedBase: MarketItem[] = data.map((item: any) => ({
-          symbol: String(item.symbol || ''),
-          last: Number(item.last) || 0,
-          percentChange: Number(item.percentChange) || 0,
-          valueChange: Number(item.valueChange) || 0,
-          high: Number(item.high) || 0,
-          low: Number(item.low) || 0,
-          open: Number(item.open) || 0,
-          prevClose: Number(item.prevClose) || 0,
-          bid: Number(item.bid) || 0,
-          ask: Number(item.ask) || 0,
-          time: String(item.time || ''),
-        }));
+        const processedBase: MarketItem[] = data.map((item: any) => {
+          const symbol = String(item.symbol || '');
+          const digits = decimalsForSymbol(symbol);
+
+          return {
+            symbol,
+            last: roundTo(Number(item.last) || 0, digits),
+            percentChange: roundTo(Number(item.percentChange) || 0, 6),
+            valueChange: roundTo(Number(item.valueChange) || 0, digits),
+            high: roundTo(Number(item.high) || 0, digits),
+            low: roundTo(Number(item.low) || 0, digits),
+            open: roundTo(Number(item.open) || 0, digits),
+            prevClose: roundTo(Number(item.prevClose) || 0, digits),
+            bid: roundTo(Number(item.bid) || 0, digits),
+            ask: roundTo(Number(item.ask) || 0, digits),
+            serverDateTime: String(item.serverDateTime || item.time || ''),
+            serverTime: String(item.serverTime || ''),
+            time: String(item.time || ''),
+          };
+        });
 
         const processed: MarketItem[] = processedBase.map((item) => {
           const prevItem = prevDataRef.current.find((p) => p.symbol === item.symbol);
@@ -89,14 +97,68 @@ export default function MarketTable() {
     };
 
     fetchMarketData();
-    const intervalId = setInterval(fetchMarketData, 5000);
-    return () => clearInterval(intervalId);
+    return;
   }, [t]);
 
+  useEffect(() => {
+    if (!socket.data || socket.data.length === 0) return;
+
+    setMarketData((prev) => {
+      if (prev.length === 0) return prev;
+
+      const dataBySymbol = new Map(socket.data.map((item) => [item.symbol, item]));
+      const next = prev.map((row) => {
+        const update = dataBySymbol.get(row.symbol);
+        if (!update) return row;
+
+        let direction: Direction = row.direction || 'neutral';
+        if (update.last > row.last) direction = 'up';
+        else if (update.last < row.last) direction = 'down';
+
+        const merged: MarketItem = {
+          ...row,
+          last: update.last,
+          percentChange: update.percentChange,
+          direction,
+        };
+
+        if (update.open !== undefined) merged.open = update.open;
+        if (update.high !== undefined) merged.high = update.high;
+        if (update.low !== undefined) merged.low = update.low;
+        if (update.prevClose !== undefined) merged.prevClose = update.prevClose;
+        if (update.valueChange !== undefined) merged.valueChange = update.valueChange;
+        if (update.bid !== undefined) merged.bid = update.bid;
+        if (update.ask !== undefined) merged.ask = update.ask;
+        if (update.serverTime !== undefined) merged.serverTime = update.serverTime;
+        if (update.serverDateTime !== undefined) merged.serverDateTime = update.serverDateTime;
+
+        return merged;
+      });
+
+      prevDataRef.current = next;
+      return next;
+    });
+  }, [socket.data]);
+
   const latestTime = useMemo(() => {
-    const times = marketData.map((item) => new Date(item.time || '').getTime()).filter((n) => !Number.isNaN(n));
-    if (times.length === 0) return '';
-    return new Date(Math.max(...times)).toLocaleString('id-ID', {
+    const stamps = marketData
+      .map((item) => item.serverDateTime || item.time || '')
+      .filter((value) => typeof value === 'string' && value.trim().length > 0);
+    if (stamps.length === 0) return '';
+
+    const dateTimeStamps = stamps.filter((value) => /^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}$/.test(value));
+    if (dateTimeStamps.length > 0) return dateTimeStamps.sort().at(-1) || '';
+
+    const parsed = stamps
+      .map((value) => {
+        const normalized = value.includes(' ') ? value.replace(' ', 'T') : value;
+        const time = new Date(normalized).getTime();
+        return Number.isNaN(time) ? null : time;
+      })
+      .filter((n): n is number => n !== null);
+
+    if (parsed.length === 0) return stamps[stamps.length - 1] || '';
+    return new Date(Math.max(...parsed)).toLocaleString('id-ID', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
