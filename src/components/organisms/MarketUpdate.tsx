@@ -105,11 +105,26 @@ export default function MarketUpdate() {
         }
     }, [marketData, latestNews]);
 
+    const decimalsForSymbol = (symbol: string) => {
+        const upper = (symbol || '').toUpperCase();
+        if (upper.startsWith('HKK') || upper.startsWith('JPK')) return 0;
+        if (upper.startsWith('AU') || upper.startsWith('EU') || upper.startsWith('GU') || upper.startsWith('UC')) return 4;
+        return 2;
+    };
+
+    const roundTo = (value: number, decimals: number) => {
+        if (!Number.isFinite(value)) return 0;
+        const factor = 10 ** decimals;
+        return Math.round((value + Number.EPSILON) * factor) / factor;
+    };
+
     const formatPrice = (symbol: string, price: number): string => {
         if (!price && price !== 0) return '-';
-        if (symbol.includes('IDR')) return `Rp${price.toLocaleString('id-ID')}`;
-        if (symbol.includes('BTC')) return `$${price.toLocaleString('en-US')}`;
-        return `$${price.toFixed(2)}`;
+        const digits = decimalsForSymbol(symbol);
+        const value = roundTo(price, digits).toFixed(digits); // no thousand separators + decimal separator is `.`
+        if (symbol.includes('IDR')) return `Rp${value}`;
+        if (symbol.includes('BTC')) return `$${value}`;
+        return `$${value}`;
     };
 
     const formatPercent = (percent: number): string => {
