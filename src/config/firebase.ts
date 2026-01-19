@@ -44,3 +44,19 @@ export function getFirebaseAnalytics(): Promise<Analytics | null> {
 
   return analyticsPromise;
 }
+
+export async function trackFirebasePageView(url: string) {
+  const analytics = await getFirebaseAnalytics();
+  if (!analytics) return;
+
+  const { logEvent } = await import("firebase/analytics");
+
+  logEvent(analytics, "page_view", {
+    page_location: window.location.href,
+    page_path: url,
+    page_title: document.title,
+    ...(process.env.NEXT_PUBLIC_FIREBASE_ANALYTICS_DEBUG === "true"
+      ? { debug_mode: true }
+      : null),
+  });
+}

@@ -6,7 +6,7 @@ import { appWithTranslation, useTranslation } from 'next-i18next';
 import nextI18NextConfig from '../../next-i18next.config';
 import LoadingScreen from "@/components/organisms/LoadingScreen";
 import ScrollToTop from '@/components/atoms/ScrollToTop';
-import { getFirebaseAnalytics } from "@/config/firebase";
+import { trackFirebasePageView } from "@/config/firebase";
 
 function App({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(true);
@@ -109,19 +109,11 @@ function App({ Component, pageProps }: AppProps) {
     let cancelled = false;
 
     (async () => {
-      const analytics = await getFirebaseAnalytics();
-      if (!analytics || cancelled) return;
-
-      const { logEvent } = await import('firebase/analytics');
-
       const logPageView = (url: string) => {
-        logEvent(analytics, 'page_view', {
-          page_location: window.location.href,
-          page_path: url,
-          page_title: document.title,
-        });
+        trackFirebasePageView(url);
       };
 
+      if (cancelled) return;
       logPageView(router.asPath);
       router.events.on('routeChangeComplete', logPageView);
       unsubscribe = () => router.events.off('routeChangeComplete', logPageView);
