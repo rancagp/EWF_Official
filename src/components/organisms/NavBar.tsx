@@ -80,24 +80,17 @@ const baseMenuItems: NavItem[] = [
       { key: "analysis_pivotFibonacci", label: "Pivot & Fibonacci", href: "/analisis/pivot-fibonacci" },
     ],
   },
-  {
-    key: "education",
-    label: "Edukasi",
-    submenu: [
-      { key: "education_tradingMechanism", label: "Mekanisme Trading", href: "/edukasi/mekanisme-perdagangan" },
-      { key: "education_indexSymbols", label: "Simbol Indeks", href: "/edukasi/symbol-indeks" },
-      { key: "education_locoLondonGold", label: "Loco London Gold", href: "/edukasi/loco-london-gold" },
-      { key: "education_summerWinter", label: "Summer & Winter", href: "/edukasi/summer-winter" },
-      { key: "education_articles", label: "Artikel", href: "/edukasi/artikel" },
-      {
-        key: "education_marketingTools",
-        label: "Alat Pemasaran",
-        href: "https://digitalmarketing.equityworld-futures.com/",
-        target: "_blank",
-      },
-    ],
-  },
-];
+	  {
+	    key: "education",
+	    label: "Edukasi",
+	    submenu: [
+	      { key: "education_tradingMechanism", label: "Mekanisme Trading", href: "/edukasi/mekanisme-perdagangan" },
+	      { key: "education_indexSymbols", label: "Simbol Indeks", href: "/edukasi/symbol-indeks" },
+	      { key: "education_locoLondonGold", label: "Loco London Gold", href: "/edukasi/loco-london-gold" },
+	      { key: "education_summerWinter", label: "Summer & Winter", href: "/edukasi/summer-winter" },
+	    ],
+	  },
+	];
 
 const NavBar: React.FC = () => {
   const { t, i18n } = useTranslation("common");
