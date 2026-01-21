@@ -19,12 +19,12 @@ const legalitasData: LegalitasItem[] = [
     {
         id: 2,
         key: 'bbj',
-        image: "/assets/logo-jfx.png",
+        image: "/assets/OJK_Logo.png",
     },
     {
         id: 3,
         key: 'kbi',
-        image: "/assets/logo-kbi.png",
+        image: "/assets/BI_Logo.png",
     },
     {
         id: 4,
